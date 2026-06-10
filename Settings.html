@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>TextDeck - Pengaturan</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+  <link href="css/global.css" rel="stylesheet" />
+  <link href="css/navbar.css" rel="stylesheet" />
+  <link href="css/profile-menu.css" rel="stylesheet" />
+  <link href="css/settings.css" rel="stylesheet" />
+</head>
+<body class="bg-[#faf8ff] text-[#131b2e] min-h-screen">
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Reusable Navbar Component Container -->
+  <div id="navbar-container"></div>
+
+  <!-- Main Settings Panel -->
+  <main class="pt-[110px] pb-16 px-4 md:px-12 max-w-[1280px] mx-auto">
+    <div class="mb-8">
+      <h1 class="text-3xl font-extrabold tracking-tight text-[#131b2e]">Pengaturan</h1>
+      <p class="text-sm text-[#404752] mt-1">Kelola data profil, preferensi presentasi, dan keamanan akun Anda.</p>
+    </div>
+
+    <!-- Inner Grid Layout -->
+    <div class="settings-container">
+      
+      <!-- Left Sidebar: Tabs Navigation -->
+      <aside class="flex flex-col gap-2">
+        <button class="settings-tab-btn active" data-tab="accountPanel">
+          <span class="material-symbols-outlined">person</span>
+          Pengaturan Akun
+        </button>
+        <button class="settings-tab-btn" data-tab="preferencesPanel">
+          <span class="material-symbols-outlined">tune</span>
+          Preferensi Presentasi
+        </button>
+        <button class="settings-tab-btn" data-tab="securityPanel">
+          <span class="material-symbols-outlined">security</span>
+          Keamanan & Sesi
+        </button>
+      </aside>
+
+      <!-- Right Main Content: Panels -->
+      <section class="flex flex-col gap-6">
+        
+        <!-- Tab 1: Account Settings -->
+        <div id="accountPanel" class="settings-panel glass-card p-6 md:p-8 flex flex-col gap-6">
+          <h2 class="text-xl font-bold border-b pb-3 border-[#c0c7d3]/20">Profil Akun</h2>
+          
+          <form id="accountForm" class="flex flex-col gap-6">
+            <!-- Profile Photo Section -->
+            <div class="flex flex-col md:flex-row items-center gap-6">
+              <div class="relative group">
+                <img id="profilePreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" alt="Foto Profil" class="w-24 h-24 rounded-full object-cover border-2 border-primary-container shadow-md">
+                <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer" id="uploadPhotoBtn">
+                  <span class="material-symbols-outlined text-white text-[24px]">photo_camera</span>
+                </div>
+                <input type="file" id="photoInput" class="hidden" accept="image/*">
+              </div>
+              <div class="text-center md:text-left">
+                <h3 class="font-bold text-base text-[#131b2e]">Foto Profil Anda</h3>
+                <p class="text-xs text-[#404752] mt-1">Gunakan foto beresolusi tinggi (format JPG, PNG, atau WEBP, max 2MB).</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="form-group">
+                <label class="form-label" for="accName">Nama Lengkap</label>
+                <input class="form-input" id="accName" type="text" placeholder="John Doe">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="accEmail">Alamat Email</label>
+                <input class="form-input" id="accEmail" type="email" placeholder="john@example.com">
+              </div>
+            </div>
+
+            <div class="flex justify-end border-t pt-5 border-[#c0c7d3]/20">
+              <button class="btn-save" type="submit">Simpan Pengaturan</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tab 2: Preferences -->
+        <div id="preferencesPanel" class="settings-panel glass-card p-6 md:p-8 flex flex-col gap-6 hidden">
+          <h2 class="text-xl font-bold border-b pb-3 border-[#c0c7d3]/20">Preferensi Presentasi</h2>
+
+          <form id="preferencesForm" class="flex flex-col gap-6">
+            <!-- Notification Settings -->
+            <div>
+              <h3 class="text-base font-bold text-[#131b2e] mb-3">Notifikasi</h3>
+              <div class="flex flex-col gap-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" checked class="rounded border-outline text-primary focus:ring-primary w-5 h-5">
+                  <span class="text-sm font-medium text-[#131b2e]">Email setelah presentasi berhasil dibuat</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" class="rounded border-outline text-primary focus:ring-primary w-5 h-5">
+                  <span class="text-sm font-medium text-[#131b2e]">Berita bulanan dan tips desain dari TextDeck</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Editor Preferences -->
+            <div>
+              <h3 class="text-base font-bold text-[#131b2e] mb-3">Preferensi Generator</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                  <label class="form-label" for="prefTemplate">Default Desain Template</label>
+                  <select class="form-input" id="prefTemplate">
+                    <option value="futuristic" selected>Futuristic Space (Default)</option>
+                    <option value="corporate">Elegant Corporate</option>
+                    <option value="creative">Bold Creative</option>
+                    <option value="dark">Minimalist Dark</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prefRatio">Default Aspect Ratio</label>
+                  <select class="form-input" id="prefRatio">
+                    <option value="16/9" selected>Widescreen (16:9)</option>
+                    <option value="4/3">Standard (4:3)</option>
+                    <option value="1/1">Square (1:1)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end border-t pt-5 border-[#c0c7d3]/20">
+              <button class="btn-save" type="submit">Simpan Preferensi</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tab 3: Security & Session Management -->
+        <div id="securityPanel" class="settings-panel glass-card p-6 md:p-8 flex flex-col gap-6 hidden">
+          <h2 class="text-xl font-bold border-b pb-3 border-[#c0c7d3]/20">Keamanan Akun</h2>
+
+          <!-- Change Password Form -->
+          <form id="securityForm" class="flex flex-col gap-6">
+            <h3 class="text-base font-bold text-[#131b2e]">Ubah Kata Sandi</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="form-group">
+                <label class="form-label" for="currentPassword">Kata Sandi Saat Ini</label>
+                <input class="form-input" id="currentPassword" type="password">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="newPassword">Kata Sandi Baru</label>
+                <input class="form-input" id="newPassword" type="password">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="confirmPassword">Konfirmasi Sandi Baru</label>
+                <input class="form-input" id="confirmPassword" type="password">
+              </div>
+            </div>
+
+            <div class="flex justify-end border-t pt-5 border-[#c0c7d3]/20 pb-5">
+              <button class="btn-save" type="submit">Perbarui Sandi</button>
+            </div>
+          </form>
+
+          <!-- Session Management -->
+          <div class="flex flex-col gap-4">
+            <h3 class="text-base font-bold text-[#131b2e]">Sesi Perangkat Aktif</h3>
+            <p class="text-xs text-[#404752]">Daftar browser dan perangkat yang saat ini masuk ke akun Anda.</p>
+            
+            <div class="flex flex-col gap-3 mt-2">
+              <div class="session-item">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary text-[28px]">desktop_windows</span>
+                  <div>
+                    <span class="text-sm font-bold block">Chrome di Windows (Sesi Saat Ini)</span>
+                    <span class="text-xs text-[#404752]">Jakarta, Indonesia · Aktif sekarang</span>
+                  </div>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 bg-green-100 text-green-800 rounded-full">Aktif</span>
+              </div>
+
+              <div class="session-item">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-[28px]">phone_iphone</span>
+                  <div>
+                    <span class="text-sm font-bold block">Safari di iPhone 14 Pro</span>
+                    <span class="text-xs text-[#404752]">Bandung, Indonesia · 2 jam lalu</span>
+                  </div>
+                </div>
+                <button class="revoke-session-btn text-xs font-bold text-red-600 hover:text-red-800 cursor-pointer">Revoke</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <script src="js/profile-menu.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

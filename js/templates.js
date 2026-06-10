@@ -167,7 +167,7 @@ function toggleStar(id) {
 function useTemplate(id) {
   const t = TEMPLATES.find(x => x.id === id);
   showToast(`✓ Membuka "${t.title}"…`);
-  setTimeout(() => { window.location.href = 'textdeck-editor.html'; }, 900);
+  setTimeout(() => { window.location.href = 'Dashboard.html'; }, 900);
 }
 
 // ── Reset filter ───────────────────────────────────
@@ -277,15 +277,12 @@ document.getElementById('loadMoreBtn').addEventListener('click', () => {
   visibleN += 6; renderGrid();
 });
 
-
 // ── Background parallax ────────────────────────────
 document.addEventListener('mousemove', e => {
   const x = (e.clientX / window.innerWidth * 100).toFixed(1);
   const y = (e.clientY / window.innerHeight * 70).toFixed(1);
   document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #d1e4ff 0%, #faf8ff 70%)`;
 });
-
-
 
 // ── Init ───────────────────────────────────────────
 renderGrid();

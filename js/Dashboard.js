@@ -1,478 +1,548 @@
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "surface-dim": "#d2d9f4",
-        "on-primary-fixed-variant": "#00497d",
-        "surface-container-lowest": "#ffffff",
-        "on-error": "#ffffff",
-        "surface-bright": "#faf8ff",
-        "on-background": "#131b2e",
-        "tertiary": "#00687c",
-        "primary": "#0061a3",
-        "surface-container-low": "#f2f3ff",
-        "error-container": "#ffdad6",
-        "on-secondary-container": "#fefcff",
-        "primary-fixed-dim": "#9ecaff",
-        "inverse-primary": "#9ecaff",
-        "on-secondary-fixed-variant": "#003ea8",
-        "tertiary-container": "#37b1cf",
-        "surface-variant": "#dae2fd",
-        "surface-tint": "#0061a3",
-        "on-primary": "#ffffff",
-        "on-tertiary-fixed": "#001f27",
-        "secondary-fixed-dim": "#b4c5ff",
-        "secondary-container": "#316bf3",
-        "on-tertiary": "#ffffff",
-        "surface-container-high": "#e2e7ff",
-        "on-tertiary-fixed-variant": "#004e5e",
-        "on-tertiary-container": "#00404d",
-        "tertiary-fixed-dim": "#64d5f4",
-        "outline": "#707883",
-        "surface-container-highest": "#dae2fd",
-        "inverse-on-surface": "#eef0ff",
-        "on-secondary": "#ffffff",
-        "background": "#faf8ff",
-        "surface": "#faf8ff",
-        "secondary": "#0051d5",
-        "on-error-container": "#93000a",
-        "on-surface-variant": "#404752",
-        "outline-variant": "#c0c7d3",
-        "inverse-surface": "#283044",
-        "primary-fixed": "#d1e4ff",
-        "error": "#ba1a1a",
-        "on-surface": "#131b2e",
-        "on-primary-fixed": "#001d36",
-        "secondary-fixed": "#dbe1ff",
-        "primary-container": "#4da8ff",
-        "on-secondary-fixed": "#00174b",
-        "surface-container": "#eaedff",
-        "on-primary-container": "#003c67",
-        "tertiary-fixed": "#b0ecff"
-      },
-      borderRadius: {
-        DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem",
-        "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
-      },
-      fontFamily: {
-        sans: ["Inter", "sans-serif"]
+/**
+ * TextDeck AI — Dashboard Logic
+ * Parsing engine, slide renderer, edit modal, export, route guard.
+ */
+
+// ── 1. ROUTE GUARD ──────────────────────────────────────────────
+(function guard() {
+  const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+  if (!token) window.location.replace("login.html");
+})();
+
+// ── 2. STATE ─────────────────────────────────────────────────────
+const state = {
+  slidesData: [],
+  currentSlideIndex: 0,
+  selectedTemplate: "futuristic",
+  selectedAspectRatio: "16/9",
+  totalSlides: 3
+};
+
+// ── 3. DOM REFS ──────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const sourceText   = $("sourceText");
+const fileInput    = $("fileInput");
+const charCount    = $("charCount");
+const slideCount   = $("slideCount");
+const slideCountVal= $("slideCountVal");
+const generateBtn  = $("generateBtn");
+const genText      = $("genText");
+const genIcon      = $("genIcon");
+const slideCanvas  = $("slideCanvas");
+const thumbRow     = $("thumbRow");
+const streamBox    = $("streamBox");
+const streamText   = $("streamText");
+const prevBtn      = $("prevBtn");
+const nextBtn      = $("nextBtn");
+const fullscreenBtn= $("fullscreenBtn");
+const editBtn      = $("editBtn");
+const downloadBtn  = $("downloadBtn");
+const slideLabel   = $("slideLabel");
+const editModal    = $("editModal");
+const editBadge    = $("editBadge");
+const editTitle    = $("editTitle");
+const editBody     = $("editBody");
+const editBulletsWrap = $("editBullets");
+const editBulletsInput= $("editBulletsInput");
+const applyEdit    = $("applyEdit");
+const cancelEdit   = $("cancelEdit");
+const closeModal   = $("closeModal");
+
+// ── 4. STOPWORDS & KEYWORD EXTRACTOR ─────────────────────────────
+const STOPWORDS = new Set([
+  "yang","di","ke","dari","dan","atau","itu","ini","untuk","adalah",
+  "merupakan","pada","dengan","dalam","tidak","juga","oleh","sebagai",
+  "ada","akan","dapat","bisa","sudah","telah","saat","jika","karena",
+  "lebih","sangat","bahwa","sehingga","namun","tetapi","ketika","setelah",
+  "antara","atas","bawah","satu","dua","tiga","the","a","an","is","are",
+  "of","in","to","and","or","for","it","this","that","be","with"
+]);
+
+function extractKeywords(text, topN = 3) {
+  const freq = {};
+  text.toLowerCase()
+      .replace(/[^a-zA-Z0-9\s]/g, " ")
+      .split(/\s+/)
+      .forEach(w => {
+        if (w.length > 2 && !STOPWORDS.has(w)) freq[w] = (freq[w] || 0) + 1;
+      });
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, topN)
+    .map(([w]) => w);
+}
+
+// ── 5. PARSING ENGINE ─────────────────────────────────────────────
+function parseContent(rawText, maxSlides) {
+  const lines = rawText.split("\n").map(l => l.trim()).filter(Boolean);
+  const items = [];   // { type, front?, back?, text?, bullets? }
+
+  const bulletRE  = /^[-*•]\s+|^\d+\.\s+|^[a-z]\.\s+/i;
+  const definitionRE = /\badalah\b|\bmerupakan\b/i;
+
+  let currentSlide = null;
+
+  lines.forEach(line => {
+    if (definitionRE.test(line)) {
+      // Flashcard rule
+      const splitIdx = line.search(definitionRE);
+      const match    = line.match(definitionRE);
+      const front    = line.substring(0, splitIdx).trim();
+      const back     = line.substring(splitIdx + match[0].length).trim();
+      if (currentSlide) items.push(currentSlide);
+      currentSlide = null;
+      items.push({ type: "flashcard", front, back });
+    } else if (bulletRE.test(line)) {
+      // Bullet rule
+      const cleaned = line.replace(bulletRE, "").trim();
+      if (!currentSlide || currentSlide.type !== "bullets") {
+        if (currentSlide) items.push(currentSlide);
+        currentSlide = { type: "bullets", text: "", bullets: [] };
       }
+      currentSlide.bullets.push(cleaned);
+    } else {
+      // Heading / body text
+      if (currentSlide) {
+        items.push(currentSlide);
+        currentSlide = null;
+      }
+      items.push({ type: "text", text: line, bullets: [] });
     }
-  }
-}
-
-// ======== STATE ========
-let slides = [];
-let currentSlide = 0;
-let selectedTemplate = 'futuristic';
-
-// ======== HELPERS ========
-function showToast(msg, duration = 3000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
-}
-
-// ======== CHAR COUNT ========
-const sourceText = document.getElementById('sourceText');
-const charCount = document.getElementById('charCount');
-sourceText.addEventListener('input', () => {
-  charCount.textContent = sourceText.value.length + ' characters';
-});
-
-// ======== FILE UPLOAD ========
-document.getElementById('fileInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const text = await file.text();
-  sourceText.value = text;
-  charCount.textContent = text.length + ' characters';
-  showToast('File loaded: ' + file.name);
-});
-
-// Drag & Drop
-const textarea = sourceText;
-textarea.addEventListener('dragover', e => { e.preventDefault(); textarea.classList.add('ring-2', 'ring-primary'); });
-textarea.addEventListener('dragleave', () => textarea.classList.remove('ring-2', 'ring-primary'));
-textarea.addEventListener('drop', async e => {
-  e.preventDefault();
-  textarea.classList.remove('ring-2', 'ring-primary');
-  const file = e.dataTransfer.files[0];
-  if (file) {
-    const text = await file.text();
-    sourceText.value = text;
-    charCount.textContent = text.length + ' characters';
-    showToast('File loaded: ' + file.name);
-  }
-});
-
-// ======== TEMPLATE SELECT ========
-document.querySelectorAll('.template-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedTemplate = btn.dataset.template;
-    if (slides.length > 0) renderSlide(currentSlide);
   });
-});
+  if (currentSlide) items.push(currentSlide);
 
-// ======== SLIDE COUNT ========
-const slideCountInput = document.getElementById('slideCount');
-const slideCountVal = document.getElementById('slideCountVal');
-slideCountInput.addEventListener('input', () => {
-  slideCountVal.textContent = slideCountInput.value;
-});
+  // Group items into slide pages
+  const slides     = [];
+  const perSlide   = Math.max(1, Math.ceil(items.length / maxSlides));
+  const keywords   = extractKeywords(rawText);
+  const badge      = keywords.length ? "#" + keywords[0] : "TextDeck";
 
-// ======== ASPECT RATIO ========
-document.getElementById('aspectRatio').addEventListener('change', function() {
-  document.getElementById('slideCanvas').style.aspectRatio = this.value;
-});
+  for (let i = 0; i < items.length; i += perSlide) {
+    const chunk  = items.slice(i, i + perSlide);
+    const first  = chunk[0];
 
-
-// ======== NAV ========
-document.getElementById('prevBtn').addEventListener('click', () => {
-  if (currentSlide > 0) { currentSlide--; renderSlide(currentSlide); updateThumbs(); }
-});
-document.getElementById('nextBtn').addEventListener('click', () => {
-  if (currentSlide < slides.length - 1) { currentSlide++; renderSlide(currentSlide); updateThumbs(); }
-});
-
-// ======== FULLSCREEN ========
-document.getElementById('fullscreenBtn').addEventListener('click', () => {
-  const el = document.getElementById('slideCanvas');
-  if (el.requestFullscreen) el.requestFullscreen();
-});
-
-// ======== GENERATE ========
-document.getElementById('generateBtn').addEventListener('click', async () => {
-  const text = sourceText.value.trim();
-  if (!text) { showToast('⚠️ Please enter some content first'); return; }
-
-  const btn = document.getElementById('generateBtn');
-  const icon = document.getElementById('genIcon');
-  const genText = document.getElementById('genText');
-  const streamBox = document.getElementById('streamBox');
-  const streamText = document.getElementById('streamText');
-  const aiStatus = document.getElementById('aiStatus');
-
-  // Loading state
-  btn.disabled = true;
-  btn.classList.add('opacity-80', 'cursor-not-allowed');
-  icon.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';
-  genText.textContent = 'Generating…';
-  streamBox.classList.remove('hidden');
-  streamText.textContent = '';
-  aiStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-tertiary ai-pulse"></span><span>Generating with Claude…</span>';
-
-  const n = parseInt(slideCountInput.value);
-
-  const systemPrompt = `You are a professional presentation designer. Generate exactly ${n} slide(s) as a JSON array. Each slide object must have:
-- "badge": short label (2-4 words, uppercase)
-- "title": compelling headline (5-12 words)
-- "body": 1-2 sentences of supporting text
-- "bullets": array of 3-4 concise bullet points (optional, include for content slides)
-- "type": one of "title", "content", "data", "quote", "conclusion"
-
-Return ONLY valid JSON array, nothing else. No markdown fences.`;
-
-  const userPrompt = `Create ${n} slide(s) for a presentation about this content:\n\n${text}`;
-
-  let rawJson = '';
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        stream: true,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }]
-      })
-    });
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          if (data === '[DONE]') continue;
-          try {
-            const evt = JSON.parse(data);
-            if (evt.type === 'content_block_delta' && evt.delta?.text) {
-              rawJson += evt.delta.text;
-              streamText.textContent = rawJson.slice(-120);
-              streamBox.scrollTop = streamBox.scrollHeight;
-            }
-          } catch {}
-        }
-      }
+    if (chunk.length === 1 && first.type === "flashcard") {
+      slides.push({
+        type: "flashcard",
+        badge,
+        title: first.front,
+        body: first.back,
+        bullets: [],
+        keywords
+      });
+    } else {
+      const allBullets = chunk.flatMap(c => c.bullets || []);
+      const titleItem  = chunk.find(c => c.type === "text") || chunk[0];
+      slides.push({
+        type: "bullets",
+        badge,
+        title: titleItem.text || titleItem.front || "Slide",
+        body: "",
+        bullets: allBullets,
+        keywords
+      });
     }
 
-    // Parse JSON
-    let parsed;
-    try {
-      const clean = rawJson.replace(/```json|```/g, '').trim();
-      parsed = JSON.parse(clean);
-      if (!Array.isArray(parsed)) parsed = [parsed];
-    } catch {
-      showToast('⚠️ Could not parse response. Showing demo slides.');
-      parsed = getDemoSlides(n, text);
-    }
-
-    slides = parsed;
-    currentSlide = 0;
-    renderSlide(0);
-    buildThumbs();
-    document.getElementById('thumbRow').classList.remove('hidden');
-    document.getElementById('slideLabel').textContent = `Slide 1 of ${slides.length}`;
-    showToast(`✓ ${slides.length} slide(s) generated!`);
-
-  } catch (err) {
-    console.error(err);
-    showToast('⚠️ API error. Using demo slides.');
-    slides = getDemoSlides(n, text);
-    currentSlide = 0;
-    renderSlide(0);
-    buildThumbs();
-    document.getElementById('thumbRow').classList.remove('hidden');
-    document.getElementById('slideLabel').textContent = `Slide 1 of ${slides.length}`;
-  } finally {
-    btn.disabled = false;
-    btn.classList.remove('opacity-80', 'cursor-not-allowed');
-    icon.className = 'material-symbols-outlined group-hover:rotate-12 transition-transform';
-    icon.textContent = 'bolt';
-    genText.textContent = 'Generate Slides';
-    streamBox.classList.add('hidden');
-    aiStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-primary ai-pulse"></span><span>AI ready to generate</span>';
+    if (slides.length >= maxSlides) break;
   }
-});
 
-function getDemoSlides(n, text) {
-  const topic = text.split(' ').slice(0, 5).join(' ');
-  const arr = [];
-  const types = ['title','content','data','quote','conclusion'];
-  for (let i = 0; i < n; i++) {
-    arr.push({
-      badge: i === 0 ? 'INTRODUCTION' : i === n-1 ? 'CONCLUSION' : 'KEY POINTS',
-      title: i === 0 ? `Overview: ${topic}` : i === n-1 ? 'Conclusion & Next Steps' : `Key Insight ${i}`,
-      body: 'This presentation explores the core concepts and provides actionable insights for stakeholders.',
-      bullets: i > 0 && i < n-1 ? ['Critical finding number one', 'Data-driven recommendation', 'Strategic opportunity identified'] : undefined,
-      type: types[i % types.length]
-    });
+  // Pad slides if we got fewer than requested
+  while (slides.length < maxSlides && slides.length > 0) {
+    const ref = slides[slides.length - 1];
+    slides.push({ ...ref, title: "Continued…", bullets: [], body: "" });
   }
-  return arr;
+
+  return slides;
 }
 
-// ======== TEMPLATES ========
-const templates = {
+// ── 6. TEMPLATE STYLES ────────────────────────────────────────────
+const TEMPLATES = {
   futuristic: {
-    bg: 'linear-gradient(135deg, #0f1b2e 0%, #1a2a4a 60%, #0d2137 100%)',
-    glow: 'rgba(77,168,255,0.2)',
-    badgeBg: 'rgba(77,168,255,0.2)',
-    badgeColor: '#9ecaff',
-    titleColor: '#ffffff',
-    bodyColor: 'rgba(255,255,255,0.7)',
-    bulletColor: 'rgba(255,255,255,0.6)',
-    bulletDot: '#4da8ff',
-    footerColor: 'rgba(255,255,255,0.35)',
-    accentLine: '#4da8ff'
+    wrapper: "background:linear-gradient(135deg,#0a1628 0%,#0d2040 60%,#0a2550 100%);min-height:320px;padding:40px;position:relative;overflow:hidden;",
+    badge:   "display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.08em;background:rgba(0,209,255,.15);color:#00d1ff;border:1px solid rgba(0,209,255,.3);margin-bottom:18px;",
+    title:   "font-size:clamp(20px,3vw,32px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:14px;",
+    body:    "font-size:14px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:16px;",
+    bullet:  "display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;",
+    dot:     "display:inline-block;width:7px;height:7px;border-radius:50%;background:#00d1ff;flex-shrink:0;margin-top:6px;",
+    bulletTxt:"font-size:14px;color:rgba(255,255,255,.82);line-height:1.6;",
+    tag:     "display:inline-block;margin-right:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(0,209,255,.1);color:#64d5f4;border:1px solid rgba(0,209,255,.2);",
+    flashFront:"background:linear-gradient(135deg,#0d2040,#0a2550);border:1px solid rgba(0,209,255,.25);color:#fff;",
+    flashBack: "background:rgba(0,209,255,.1);border:1px solid rgba(0,209,255,.3);color:#fff;"
   },
   corporate: {
-    bg: 'linear-gradient(160deg, #f8faff 0%, #eef2ff 100%)',
-    glow: 'rgba(0,97,163,0.06)',
-    badgeBg: 'rgba(0,97,163,0.1)',
-    badgeColor: '#0061a3',
-    titleColor: '#131b2e',
-    bodyColor: '#404752',
-    bulletColor: '#404752',
-    bulletDot: '#0061a3',
-    footerColor: '#a0a8b8',
-    accentLine: '#0061a3'
+    wrapper: "background:#fff;min-height:320px;padding:40px;border-left:5px solid #0061a3;",
+    badge:   "display:inline-block;padding:4px 14px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.06em;background:#e8f0fe;color:#0061a3;margin-bottom:18px;",
+    title:   "font-size:clamp(20px,3vw,30px);font-weight:700;color:#131b2e;line-height:1.25;margin-bottom:14px;",
+    body:    "font-size:14px;color:#404752;line-height:1.7;margin-bottom:16px;",
+    bullet:  "display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;",
+    dot:     "display:inline-block;width:8px;height:8px;background:#0061a3;flex-shrink:0;margin-top:6px;",
+    bulletTxt:"font-size:14px;color:#283044;line-height:1.6;",
+    tag:     "display:inline-block;margin-right:6px;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;background:#f0f4f8;color:#0061a3;border:1px solid #c0c7d3;",
+    flashFront:"background:#f8fafc;border:2px solid #0061a3;color:#131b2e;",
+    flashBack: "background:#e8f0fe;border:2px solid #0061a3;color:#131b2e;"
   },
   creative: {
-    bg: 'linear-gradient(135deg, #1a0533 0%, #2d1057 50%, #0a1f40 100%)',
-    glow: 'rgba(180,100,255,0.2)',
-    badgeBg: 'rgba(180,100,255,0.25)',
-    badgeColor: '#d4a8ff',
-    titleColor: '#ffffff',
-    bodyColor: 'rgba(255,255,255,0.72)',
-    bulletColor: 'rgba(255,255,255,0.65)',
-    bulletDot: '#c084fc',
-    footerColor: 'rgba(255,255,255,0.3)',
-    accentLine: '#c084fc'
+    wrapper: "background:linear-gradient(135deg,#7c3aed 0%,#db2777 50%,#f59e0b 100%);min-height:320px;padding:40px;",
+    badge:   "display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.08em;background:rgba(255,255,255,.25);color:#fff;margin-bottom:18px;",
+    title:   "font-size:clamp(22px,3.5vw,36px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:14px;text-shadow:0 2px 8px rgba(0,0,0,.2);",
+    body:    "font-size:14px;color:rgba(255,255,255,.9);line-height:1.7;margin-bottom:16px;",
+    bullet:  "display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;",
+    dot:     "display:inline-block;width:10px;height:10px;border-radius:2px;background:#fff;flex-shrink:0;margin-top:5px;transform:rotate(45deg);",
+    bulletTxt:"font-size:14px;color:#fff;line-height:1.6;font-weight:500;",
+    tag:     "display:inline-block;margin-right:6px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);color:#fff;",
+    flashFront:"background:rgba(124,58,237,.8);border:1px solid rgba(255,255,255,.3);color:#fff;",
+    flashBack: "background:rgba(219,39,119,.7);border:1px solid rgba(255,255,255,.3);color:#fff;"
   },
   dark: {
-    bg: 'linear-gradient(150deg, #0a0a0f 0%, #111827 100%)',
-    glow: 'rgba(99,102,241,0.15)',
-    badgeBg: 'rgba(99,102,241,0.2)',
-    badgeColor: '#a5b4fc',
-    titleColor: '#f1f5f9',
-    bodyColor: 'rgba(241,245,249,0.65)',
-    bulletColor: 'rgba(241,245,249,0.55)',
-    bulletDot: '#818cf8',
-    footerColor: 'rgba(241,245,249,0.25)',
-    accentLine: '#818cf8'
+    wrapper: "background:linear-gradient(160deg,#0f1117 0%,#1a1f2e 100%);min-height:320px;padding:40px;",
+    badge:   "display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.08em;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);margin-bottom:18px;",
+    title:   "font-size:clamp(20px,3vw,32px);font-weight:800;color:#e2e8f0;line-height:1.2;margin-bottom:14px;",
+    body:    "font-size:14px;color:#94a3b8;line-height:1.7;margin-bottom:16px;",
+    bullet:  "display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;",
+    dot:     "display:inline-block;width:7px;height:7px;border-radius:50%;background:#d4a017;flex-shrink:0;margin-top:6px;",
+    bulletTxt:"font-size:14px;color:#cbd5e1;line-height:1.6;",
+    tag:     "display:inline-block;margin-right:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(212,160,23,.12);color:#d4a017;border:1px solid rgba(212,160,23,.2);",
+    flashFront:"background:#1e2336;border:1px solid rgba(52,211,153,.2);color:#e2e8f0;",
+    flashBack: "background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:#e2e8f0;"
   }
 };
 
-function renderSlide(idx) {
-  const slide = slides[idx];
-  const t = templates[selectedTemplate];
-  const canvas = document.getElementById('slideCanvas');
-  canvas.style.aspectRatio = document.getElementById('aspectRatio').value;
-
-  const bullets = slide.bullets && slide.bullets.length
-    ? slide.bullets.map(b => `
-        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
-          <div style="width:6px;height:6px;border-radius:50%;background:${t.bulletDot};margin-top:7px;flex-shrink:0;"></div>
-          <span style="color:${t.bulletColor};font-size:clamp(11px,1.5vw,15px);line-height:1.5;">${b}</span>
-        </div>`).join('')
-    : '';
-
-  canvas.innerHTML = `
-    <div style="
-      width:100%; height:100%; min-height:220px;
-      background:${t.bg};
-      position:relative; overflow:hidden;
-      display:flex; align-items:center; justify-content:center;
-    ">
-      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 75% 25%, ${t.glow} 0%, transparent 55%),radial-gradient(ellipse at 20% 80%, ${t.glow} 0%, transparent 50%);pointer-events:none;"></div>
-      <div style="position:relative;z-index:2;padding:clamp(20px,5%,60px);width:100%;max-width:860px;">
-        ${slide.badge ? `<div style="display:inline-block;padding:4px 14px;background:${t.badgeBg};color:${t.badgeColor};border-radius:999px;font-size:clamp(9px,1.1vw,11px);font-weight:700;letter-spacing:0.08em;margin-bottom:clamp(10px,2vw,20px);text-transform:uppercase;">${slide.badge}</div>` : ''}
-        <div style="height:3px;width:40px;background:${t.accentLine};border-radius:2px;margin-bottom:clamp(10px,1.5vw,16px);opacity:0.7;display:none;" id="accentBar_${idx}"></div>
-        <h3 style="color:${t.titleColor};font-size:clamp(16px,2.8vw,36px);font-weight:700;line-height:1.2;margin-bottom:clamp(8px,1.5vw,18px);letter-spacing:-0.02em;">${slide.title}</h3>
-        <p style="color:${t.bodyColor};font-size:clamp(11px,1.5vw,16px);line-height:1.65;max-width:600px;margin-bottom:${bullets ? 'clamp(10px,1.5vw,18px)' : '0'};">${slide.body}</p>
-        ${bullets ? `<div style="margin-top:4px;">${bullets}</div>` : ''}
-        <div style="position:absolute;bottom:clamp(12px,2vw,24px);right:clamp(16px,3vw,32px);font-size:clamp(9px,1vw,11px);color:${t.footerColor};font-weight:500;">
-          TextDeck AI · Slide ${idx + 1}/${slides.length}
-        </div>
-      </div>
-    </div>`;
-
-  document.getElementById('slideLabel').textContent = `Slide ${idx + 1} of ${slides.length}`;
-  canvas.classList.add('ring-4','ring-primary/30');
-  setTimeout(() => canvas.classList.remove('ring-4','ring-primary/30'), 800);
+// ── 7. RENDER ENGINE ──────────────────────────────────────────────
+function getAspectStyle(ratio) {
+  if (ratio === "16/9") return "aspect-ratio:16/9;";
+  if (ratio === "4/3")  return "aspect-ratio:4/3;";
+  if (ratio === "1/1")  return "aspect-ratio:1/1;";
+  return "aspect-ratio:16/9;";
 }
 
-// ======== THUMBNAILS ========
-function buildThumbs() {
-  const row = document.getElementById('thumbRow');
-  row.innerHTML = '';
-  slides.forEach((s, i) => {
-    const t = templates[selectedTemplate];
-    const div = document.createElement('div');
-    div.className = `slide-thumb ${i === currentSlide ? 'active' : ''}`;
-    div.style.minWidth = '120px';
-    div.style.flex = '0 0 120px';
-    div.innerHTML = `
-      <div style="width:100%;height:100%;background:${t.bg};display:flex;align-items:center;justify-content:center;position:relative;min-height:68px;">
-        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%, ${t.glow} 0%, transparent 60%);"></div>
-        <div style="z-index:2;text-align:center;padding:8px;position:relative;">
-          <div style="font-size:9px;color:${t.badgeColor};font-weight:700;letter-spacing:0.06em;margin-bottom:3px;opacity:0.8;">${s.badge || ''}</div>
-          <div style="font-size:10px;color:${t.titleColor};font-weight:600;line-height:1.3;opacity:0.9;">${(s.title||'').substring(0,32)}${s.title && s.title.length > 32 ? '…' : ''}</div>
-        </div>
-        <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:${t.footerColor};">${i+1}</div>
-      </div>`;
-    div.addEventListener('click', () => {
-      currentSlide = i;
-      renderSlide(i);
-      updateThumbs();
-    });
-    row.appendChild(div);
-  });
-}
+function buildSlideHTML(slide, tmpl) {
+  const s = TEMPLATES[tmpl] || TEMPLATES.futuristic;
+  const aspectStyle = getAspectStyle(state.selectedAspectRatio);
 
-function updateThumbs() {
-  document.querySelectorAll('.slide-thumb').forEach((el, i) => {
-    el.classList.toggle('active', i === currentSlide);
-  });
-}
-
-// ======== EDIT MODAL ========
-document.getElementById('editBtn').addEventListener('click', () => {
-  if (!slides.length) { showToast('⚠️ Generate slides first'); return; }
-  const s = slides[currentSlide];
-  document.getElementById('editBadge').value = s.badge || '';
-  document.getElementById('editTitle').value = s.title || '';
-  document.getElementById('editBody').value = s.body || '';
-  if (s.bullets) {
-    document.getElementById('editBullets').classList.remove('hidden');
-    document.getElementById('editBulletsInput').value = s.bullets.join('\n');
-  } else {
-    document.getElementById('editBullets').classList.add('hidden');
-  }
-  document.getElementById('editModal').classList.remove('hidden');
-});
-
-document.getElementById('closeModal').addEventListener('click', () => {
-  document.getElementById('editModal').classList.add('hidden');
-});
-document.getElementById('cancelEdit').addEventListener('click', () => {
-  document.getElementById('editModal').classList.add('hidden');
-});
-document.getElementById('editModal').addEventListener('click', function(e) {
-  if (e.target === this) this.classList.add('hidden');
-});
-
-document.getElementById('applyEdit').addEventListener('click', () => {
-  slides[currentSlide].badge = document.getElementById('editBadge').value;
-  slides[currentSlide].title = document.getElementById('editTitle').value;
-  slides[currentSlide].body = document.getElementById('editBody').value;
-  const bulletsRaw = document.getElementById('editBulletsInput').value.trim();
-  if (bulletsRaw) slides[currentSlide].bullets = bulletsRaw.split('\n').filter(b => b.trim());
-  renderSlide(currentSlide);
-  buildThumbs();
-  document.getElementById('editModal').classList.add('hidden');
-  showToast('✓ Slide updated');
-});
-
-// ======== DOWNLOAD ========
-document.getElementById('downloadBtn').addEventListener('click', () => {
-  if (!slides.length) { showToast('⚠️ Generate slides first'); return; }
-  const t = templates[selectedTemplate];
-
-  const allSlides = slides.map((s, i) => {
-    const bullets = s.bullets && s.bullets.length
-      ? `<div style="margin-top:16px;">${s.bullets.map(b => `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;"><div style="width:6px;height:6px;border-radius:50%;background:${t.bulletDot};margin-top:7px;flex-shrink:0;"></div><span style="color:${t.bulletColor};font-size:15px;line-height:1.5;">${b}</span></div>`).join('')}</div>`
-      : '';
+  if (slide.type === "flashcard") {
     return `
-      <div class="slide" style="width:100%;aspect-ratio:16/9;background:${t.bg};position:relative;overflow:hidden;page-break-after:always;display:flex;align-items:center;justify-content:center;margin-bottom:24px;border-radius:16px;">
-        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 75% 25%, ${t.glow} 0%, transparent 55%);"></div>
-        <div style="position:relative;z-index:2;padding:60px;width:100%;max-width:860px;">
-          ${s.badge ? `<div style="display:inline-block;padding:5px 16px;background:${t.badgeBg};color:${t.badgeColor};border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.08em;margin-bottom:20px;text-transform:uppercase;">${s.badge}</div>` : ''}
-          <h2 style="color:${t.titleColor};font-size:36px;font-weight:700;line-height:1.2;margin:0 0 18px;letter-spacing:-0.02em;">${s.title}</h2>
-          <p style="color:${t.bodyColor};font-size:16px;line-height:1.65;max-width:600px;margin:0;">${s.body}</p>
-          ${bullets}
-          <div style="position:absolute;bottom:24px;right:32px;font-size:11px;color:${t.footerColor};font-weight:500;">TextDeck AI · Slide ${i+1}/${slides.length}</div>
+      <div style="${s.wrapper}${aspectStyle}display:flex;align-items:center;justify-content:center;">
+        <div class="td-flashcard" onclick="this.classList.toggle('flipped')"
+             style="width:80%;max-width:480px;min-height:180px;cursor:pointer;perspective:1000px;position:relative;">
+          <div style="position:relative;width:100%;min-height:180px;transform-style:preserve-3d;transition:transform .6s;transform:var(--flip,rotateY(0deg));">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;${s.flashFront}">
+              <div style="${s.badge}">TERM</div>
+              <div style="${s.title}margin-bottom:0;">${slide.title}</div>
+              <p style="font-size:12px;color:rgba(150,150,150,.7);margin-top:12px;">Click to reveal →</p>
+            </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotateY(180deg);${s.flashBack}">
+              <div style="${s.badge}">DEFINITION</div>
+              <div style="${s.body}margin-bottom:0;">${slide.body}</div>
+            </div>
+          </div>
         </div>
+        <style>.td-flashcard.flipped > div { transform: rotateY(180deg) !important; }</style>
       </div>`;
-  }).join('');
+  }
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>TextDeck Presentation</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Inter',sans-serif;background:#111;padding:32px;}h2{margin:0;}</style>
-</head><body>${allSlides}</body></html>`;
+  const bulletsHTML = slide.bullets && slide.bullets.length
+    ? slide.bullets.map(b => `
+        <div style="${s.bullet}">
+          <span style="${s.dot}"></span>
+          <span style="${s.bulletTxt}">${b}</span>
+        </div>`).join("")
+    : "";
 
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'textdeck-presentation.html';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✓ Presentation downloaded!');
+  const tagsHTML = slide.keywords && slide.keywords.length
+    ? `<div style="margin-top:20px;">${slide.keywords.map(k =>
+        `<span style="${s.tag}">${k}</span>`).join("")}</div>`
+    : "";
+
+  return `
+    <div style="${s.wrapper}${aspectStyle}">
+      <div style="${s.badge}">${slide.badge || "TextDeck"}</div>
+      <div style="${s.title}">${slide.title}</div>
+      ${slide.body ? `<div style="${s.body}">${slide.body}</div>` : ""}
+      ${bulletsHTML}
+      ${tagsHTML}
+    </div>`;
+}
+
+function renderSlide() {
+  if (!state.slidesData.length) {
+    slideCanvas.innerHTML = `
+      <div class="slide-card-content flex flex-col items-center justify-center h-full min-h-[240px] p-8 text-center">
+        <span class="material-symbols-outlined text-white/20 text-[64px] mb-4">auto_awesome</span>
+        <p class="text-white/40 text-sm font-medium">Your generated slides will appear here</p>
+        <p class="text-white/25 text-xs mt-1">Enter content on the left and click Generate Slides</p>
+      </div>`;
+    slideLabel.textContent = "No slides yet";
+    return;
+  }
+
+  const slide = state.slidesData[state.currentSlideIndex];
+  slideCanvas.innerHTML = buildSlideHTML(slide, state.selectedTemplate);
+  slideLabel.textContent = `Slide ${state.currentSlideIndex + 1} of ${state.slidesData.length}`;
+  renderThumbs();
+  updateNavBtns();
+}
+
+function renderThumbs() {
+  thumbRow.innerHTML = "";
+  thumbRow.classList.remove("hidden");
+  thumbRow.style.display = "flex";
+
+  state.slidesData.forEach((slide, i) => {
+    const thumb = document.createElement("div");
+    thumb.style.cssText = `
+      flex: 0 0 auto; width: 100px; height: 60px; border-radius: 8px;
+      overflow: hidden; cursor: pointer; border: 2px solid ${i === state.currentSlideIndex ? "#4da8ff" : "transparent"};
+      transition: border-color .15s;`;
+
+    const mini = document.createElement("div");
+    mini.style.cssText = "transform: scale(0.2); transform-origin: top left; width: 500px; height: 300px; pointer-events: none;";
+    mini.innerHTML = buildSlideHTML(slide, state.selectedTemplate);
+    thumb.appendChild(mini);
+
+    thumb.addEventListener("click", () => {
+      state.currentSlideIndex = i;
+      renderSlide();
+    });
+    thumbRow.appendChild(thumb);
+  });
+}
+
+function updateNavBtns() {
+  prevBtn.disabled = state.currentSlideIndex === 0;
+  nextBtn.disabled = state.currentSlideIndex >= state.slidesData.length - 1;
+  prevBtn.style.opacity = prevBtn.disabled ? "0.3" : "1";
+  nextBtn.style.opacity = nextBtn.disabled ? "0.3" : "1";
+}
+
+// ── 8. STREAMING SIMULATION ───────────────────────────────────────
+function simulateStream(text, onDone) {
+  streamBox.classList.remove("hidden");
+  if (streamText) streamText.textContent = "";
+  const words = text.split(" ");
+  let i = 0;
+  const ticker = setInterval(() => {
+    if (i < words.length) {
+      if (streamText) streamText.textContent += (i > 0 ? " " : "") + words[i++];
+      streamBox.scrollTop = streamBox.scrollHeight;
+    } else {
+      clearInterval(ticker);
+      if (onDone) onDone();
+    }
+  }, 40);
+}
+
+// ── 9. EVENT LISTENERS ───────────────────────────────────────────
+
+// Char counter
+if (sourceText) {
+  sourceText.addEventListener("input", () => {
+    const len = sourceText.value.length;
+    if (charCount) charCount.textContent = len.toLocaleString() + " characters";
+  });
+}
+
+// File upload
+if (fileInput) {
+  fileInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const ext = file.name.split(".").pop().toLowerCase();
+    if (!["txt", "md"].includes(ext)) {
+      alert("Hanya file .txt dan .md yang didukung untuk ekstraksi teks.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      if (sourceText) {
+        sourceText.value = ev.target.result;
+        sourceText.dispatchEvent(new Event("input"));
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+// Slide count slider
+if (slideCount) {
+  slideCount.addEventListener("input", () => {
+    state.totalSlides = parseInt(slideCount.value);
+    if (slideCountVal) slideCountVal.textContent = state.totalSlides;
+  });
+}
+
+// Template selector
+document.querySelectorAll(".template-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".template-btn").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    state.selectedTemplate = btn.dataset.template || "futuristic";
+    renderSlide();
+  });
 });
+
+// Aspect ratio
+const aspectRatioEl = $("aspectRatio");
+if (aspectRatioEl) {
+  aspectRatioEl.addEventListener("change", () => {
+    state.selectedAspectRatio = aspectRatioEl.value;
+    renderSlide();
+  });
+}
+
+// Generate slides
+if (generateBtn) {
+  generateBtn.addEventListener("click", () => {
+    const text = sourceText ? sourceText.value.trim() : "";
+    if (!text) {
+      alert("Masukkan teks terlebih dahulu.");
+      return;
+    }
+
+    genText.textContent = "Processing...";
+    genIcon.textContent = "hourglass_empty";
+    generateBtn.disabled = true;
+
+    const preview = "Parsing content… identifying definitions, bullets, and keywords… building slides…";
+    simulateStream(preview, () => {
+      state.slidesData = parseContent(text, state.totalSlides);
+      state.currentSlideIndex = 0;
+
+      setTimeout(() => {
+        genText.textContent  = "Generate Slides";
+        genIcon.textContent  = "bolt";
+        generateBtn.disabled = false;
+        streamBox.classList.add("hidden");
+        renderSlide();
+      }, 600);
+    });
+  });
+}
+
+// Prev / Next
+if (prevBtn) {
+  prevBtn.addEventListener("click", () => {
+    if (state.currentSlideIndex > 0) {
+      state.currentSlideIndex--;
+      renderSlide();
+    }
+  });
+}
+if (nextBtn) {
+  nextBtn.addEventListener("click", () => {
+    if (state.currentSlideIndex < state.slidesData.length - 1) {
+      state.currentSlideIndex++;
+      renderSlide();
+    }
+  });
+}
+
+// Fullscreen
+if (fullscreenBtn && slideCanvas) {
+  fullscreenBtn.addEventListener("click", () => {
+    if (slideCanvas.requestFullscreen) slideCanvas.requestFullscreen();
+    else if (slideCanvas.webkitRequestFullscreen) slideCanvas.webkitRequestFullscreen();
+  });
+}
+
+// ── 10. EDIT MODAL ───────────────────────────────────────────────
+function openModal() {
+  if (!state.slidesData.length) return;
+  const slide = state.slidesData[state.currentSlideIndex];
+  editBadge.value = slide.badge || "";
+  editTitle.value = slide.title || "";
+  editBody.value  = slide.body  || "";
+  if (slide.bullets && slide.bullets.length) {
+    editBulletsWrap.classList.remove("hidden");
+    editBulletsInput.value = slide.bullets.join("\n");
+  } else {
+    editBulletsWrap.classList.add("hidden");
+    editBulletsInput.value = "";
+  }
+  editModal.classList.remove("hidden");
+}
+
+function closeModalFn() {
+  editModal.classList.add("hidden");
+}
+
+if (editBtn)    editBtn.addEventListener("click", openModal);
+if (closeModal) closeModal.addEventListener("click", closeModalFn);
+if (cancelEdit) cancelEdit.addEventListener("click", closeModalFn);
+
+editModal && editModal.addEventListener("click", e => {
+  if (e.target === editModal) closeModalFn();
+});
+
+if (applyEdit) {
+  applyEdit.addEventListener("click", () => {
+    if (!state.slidesData.length) return;
+    const slide = state.slidesData[state.currentSlideIndex];
+    slide.badge   = editBadge.value.trim();
+    slide.title   = editTitle.value.trim();
+    slide.body    = editBody.value.trim();
+    slide.bullets = editBulletsInput.value
+      .split("\n").map(l => l.trim()).filter(Boolean);
+    closeModalFn();
+    renderSlide();
+  });
+}
+
+// ── 11. DOWNLOAD HTML ────────────────────────────────────────────
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", () => {
+    if (!state.slidesData.length) {
+      alert("Generate slides terlebih dahulu.");
+      return;
+    }
+
+    const allSlidesHTML = state.slidesData.map((slide, i) => `
+      <section id="slide-${i + 1}" style="page-break-after:always;margin-bottom:48px;">
+        <div style="font-size:12px;color:#888;margin-bottom:8px;font-family:monospace;">
+          Slide ${i + 1} / ${state.slidesData.length}
+        </div>
+        ${buildSlideHTML(slide, state.selectedTemplate)}
+      </section>`).join("\n");
+
+    const html = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>TextDeck Presentation</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Inter,system-ui,sans-serif;background:#f0f4f8;padding:32px;}
+    section{border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.15);max-width:960px;margin:0 auto 48px;}
+    @media print{section{page-break-after:always;margin-bottom:0;}}
+    .td-flashcard.flipped>div{transform:rotateY(180deg)!important;}
+  </style>
+</head>
+<body>
+  <header style="text-align:center;margin-bottom:40px;">
+    <h1 style="font-size:28px;font-weight:800;color:#0061a3;">TextDeck AI — Presentation Export</h1>
+    <p style="color:#888;font-size:13px;margin-top:6px;">Generated ${new Date().toLocaleString()}</p>
+  </header>
+  ${allSlidesHTML}
+  <script>
+    document.querySelectorAll('.td-flashcard').forEach(fc=>{
+      fc.addEventListener('click',()=>fc.classList.toggle('flipped'));
+    });
+  <\/script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = "textdeck-presentation.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+
+// ── 12. INIT ──────────────────────────────────────────────────────
+renderSlide();
+updateNavBtns();

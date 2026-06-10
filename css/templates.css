@@ -1,0 +1,145 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at 50% 0%, #d1e4ff 0%, #faf8ff 70%);
+  min-height: 100vh;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.28);
+  box-shadow: 0 4px 20px rgba(77,168,255,0.08);
+}
+
+/* 3D tilt card */
+.tilt-card {
+  transition: box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-card:hover {
+  box-shadow: 0 24px 48px rgba(77,168,255,0.18);
+}
+
+/* Category pill */
+.category-pill {
+  transition: all 0.2s;
+}
+
+.category-pill.active {
+  background: #0061a3;
+  color: white;
+  box-shadow: 0 4px 14px rgba(0,97,163,0.25);
+}
+
+/* Image zoom */
+.card-img {
+  transition: transform 0.7s cubic-bezier(0.34,1.06,0.64,1);
+}
+
+.tilt-card:hover .card-img {
+  transform: scale(1.1);
+}
+
+.card-overlay {
+  transition: opacity 0.4s;
+}
+
+.tilt-card:hover .card-overlay {
+  opacity: 1 !important;
+}
+
+/* Arrow icon slide */
+.arrow-icon {
+  transition: transform 0.2s;
+}
+
+.use-btn:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+/* Badge colors per category */
+.badge-business   { background: #d1e4ff; color: #003c67; }
+.badge-education  { background: #b0ecff; color: #00404d; }
+.badge-technology { background: #dbe1ff; color: #00174b; }
+.badge-creative   { background: #d1e4ff; color: #003c67; }
+.badge-minimalist { background: #dae2fd; color: #404752; }
+
+/* Search */
+#searchInput:focus {
+  box-shadow: 0 0 0 3px rgba(77,168,255,0.18);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: #131b2e;
+  color: white;
+  padding: 11px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Preview modal */
+#previewModal {
+  transition: opacity 0.22s;
+}
+
+/* No-scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,97,163,0.18);
+  border-radius: 999px;
+}
+
+/* Fade in */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.45s ease both;
+}
+
+/* Card hide/show for filter */
+.tmpl-item {
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.tmpl-item.filtered-out {
+  display: none;
+}
