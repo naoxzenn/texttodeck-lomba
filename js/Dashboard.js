@@ -4,10 +4,10 @@
  */
 
 // ── 1. ROUTE GUARD ──────────────────────────────────────────────
-(function guard() {
-  const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-  if (!token) window.location.replace("login.html");
-})();
+//(function guard() {
+  //const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+  //if (!token) window.location.replace("login.html");
+//})();
 
 // ── 2. STATE ─────────────────────────────────────────────────────
 const state = {

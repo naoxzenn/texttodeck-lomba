@@ -1,18 +1,18 @@
 // Settings Page Logic
 
-document.addEventListener("DOMContentLoaded", () => {
+//document.addEventListener("DOMContentLoaded", () => {
   // Ensure user is logged in
-  if (!localStorage.getItem("authToken")) {
-    window.location.href = "login.html";
-    return;
-  }
+  //if (!localStorage.getItem("authToken")) {
+   // window.location.href = "login.html";
+   // return;
+  //}
 
-  initTabs();
-  loadUserInfo();
-  initPhotoUpload();
-  initFormSubmissions();
-  initSessionManagement();
-});
+  //initTabs();
+  //loadUserInfo();
+  //initPhotoUpload();
+  //initFormSubmissions();
+  //initSessionManagement();
+//});
 
 // Toast Helper
 function showToast(msg, duration = 3000) {
