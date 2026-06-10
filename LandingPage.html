@@ -1,0 +1,433 @@
+<!doctype html>
+
+<html class="light" lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>TextDeck AI - Ubah Teks Menjadi Presentasi Profesional</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link href="css/LandingPage.css" rel="stylesheet" />
+  <link href="css/navbar.css" rel="stylesheet" />
+</head>
+
+<body class="bg-background text-on-surface transition-colors duration-300">
+  <!-- Reusable Navbar Component Container -->
+  <div id="navbar-container"></div>
+  <main class="pt-xl overflow-x-hidden">
+    <!-- Hero Section -->
+    <section class="relative min-h-[795px] flex items-center hero-gradient px-md py-lg md:py-xl">
+      <div class="absolute inset-0 z-0 opacity-30 pointer-events-none">
+        <div class="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-tertiary/20 rounded-full blur-[100px]"></div>
+      </div>
+      <div class="max-w-[1280px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-lg items-center relative z-10">
+        <div class="lg:col-span-7 space-y-md">
+          <div
+            class="inline-flex items-center gap-xs px-sm py-base bg-primary/10 border border-primary/20 rounded-full text-primary">
+            <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+            <span class="font-label-sm text-label-sm uppercase tracking-wider">AI-Powered Creativity</span>
+          </div>
+          <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface leading-tight">
+            Ubah Teks Menjadi
+            <span class="text-primary italic">Presentasi Profesional</span>
+            Dalam Hitungan Detik
+          </h1>
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+            Gunakan AI untuk membuat slide otomatis dengan desain modern dan
+            profesional. Hemat waktu berjam-jam untuk brainstorming dan desain
+            manual.
+          </p>
+          <div class="flex flex-wrap gap-md pt-md">
+            <button
+              class="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded-xl hover:shadow-[0_0_30px_rgba(77,168,255,0.5)] transition-all transform hover:-translate-y-1 active:scale-95">
+              Mulai Gratis
+            </button>
+            <button
+              class="border-2 border-primary text-primary font-label-md text-label-md px-lg py-sm rounded-xl hover:bg-primary/5 transition-all active:scale-95">
+              Lihat Demo
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-5 relative">
+          <div class="glass p-base rounded-[2rem] shadow-2xl relative overflow-hidden group">
+            <img alt="AI Dashboard"
+              class="w-full h-auto rounded-[1.8rem] transform transition-transform duration-700 group-hover:scale-105"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvw8pca4G1dWzxtGsZO-l3ST3CJodtxVd_T9TwTvdU--_mgX0-fK-0DcygOJNyU1tod26xdA6yjoug8VxscQ0vjHuKCGhyqOpswOjLsVE57RK5LxYZfMLLGkXd7idrZmURjRaizRFdPFcIiN6jaO7GHP9KuN0ut4Ldt0d0j7TKQJPaNhKFxx7gXzDWcZWNK3Hqe6G1T5k08GPzcrM74mVy7OMTG5yhxY-VSWceEBPG_eaQufjM3XXfVDdpSBRWfpPD3HWObvGQGQk" />
+            <div
+              class="absolute top-sm left-sm glass px-md py-xs rounded-full flex items-center gap-xs shadow-lg animate-bounce">
+              <span class="material-symbols-outlined text-primary">auto_fix_high</span>
+              <span class="font-label-sm text-label-sm text-primary">Generating Slides...</span>
+            </div>
+          </div>
+          <div
+            class="absolute -bottom-md -left-md glass p-sm rounded-2xl shadow-xl flex items-center gap-sm animate-pulse">
+            <div class="w-xs h-xs bg-primary rounded-full"></div>
+            <span class="font-label-sm text-label-sm">Exporting to PDF...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Dashboard Section -->
+    <section class="max-w-[1280px] mx-auto px-md py-xl lg:py-[120px]" id="Dashboard">
+      <div class="text-center mb-xl">
+        <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">
+          Fitur Canggih Untuk Produktivitas Anda
+        </h2>
+        <div class="h-base w-md bg-primary mx-auto rounded-full"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+        <!-- Card 1 -->
+        <div
+          class="glass p-md rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
+          <div
+            class="w-lg h-lg bg-primary-container/20 rounded-xl flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-primary text-3xl">bolt</span>
+          </div>
+          <h3 class="font-headline-md text-body-lg font-bold mb-sm">
+            AI Text to PPT Otomatis
+          </h3>
+          <p class="font-body-md text-on-surface-variant">
+            Cukup tempelkan teks panjang atau unggah dokumen Anda, dan biarkan
+            AI kami menyusun struktur slide yang logis.
+          </p>
+        </div>
+        <!-- Card 2 -->
+        <div
+          class="glass p-md rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
+          <div
+            class="w-lg h-lg bg-tertiary-container/20 rounded-xl flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-tertiary text-3xl">dashboard_customize</span>
+          </div>
+          <h3 class="font-headline-md text-body-lg font-bold mb-sm">
+            Desain Slide Modern
+          </h3>
+          <p class="font-body-md text-on-surface-variant">
+            Pilih dari ratusan template profesional yang dikurasi oleh
+            desainer kelas dunia untuk setiap jenis industri.
+          </p>
+        </div>
+        <!-- Card 3 -->
+        <div
+          class="glass p-md rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
+          <div
+            class="w-lg h-lg bg-secondary-container/10 rounded-xl flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-secondary text-3xl">cloud_download</span>
+          </div>
+          <h3 class="font-headline-md text-body-lg font-bold mb-sm">
+            Export PPT &amp; PDF
+          </h3>
+          <p class="font-body-md text-on-surface-variant">
+            Download hasil akhir dalam format PowerPoint yang dapat diedit
+            sepenuhnya atau dokumen PDF siap kirim.
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- How it Works Section -->
+    <section class="bg-surface-container-low dark:bg-surface-dim/10 py-xl lg:py-[120px]" id="how-it-works">
+      <div class="max-w-[1280px] mx-auto px-md">
+        <div class="text-center mb-xl">
+          <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">
+            Cara Kerja TextDeck AI
+          </h2>
+          <p class="font-body-md text-on-surface-variant">
+            Hanya butuh 4 langkah mudah untuk mendapatkan presentasi impian
+            Anda.
+          </p>
+        </div>
+        <div class="relative">
+          <div class="hidden md:block absolute top-1/2 left-0 w-full h-base bg-outline-variant/30 -translate-y-1/2">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-lg relative z-10">
+            <!-- Step 1 -->
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="w-[64px] h-[64px] rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl shadow-lg mb-md ring-8 ring-background dark:ring-surface-dim">
+                1
+              </div>
+              <h4 class="font-label-md text-label-md text-on-surface mb-xs">
+                Input Teks
+              </h4>
+              <p class="font-body-md text-on-surface-variant text-sm">
+                Upload file (PDF/Docx) atau tempel teks langsung ke dalam
+                editor.
+              </p>
+            </div>
+            <!-- Step 2 -->
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="w-[64px] h-[64px] rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl shadow-lg mb-md ring-8 ring-background dark:ring-surface-dim">
+                2
+              </div>
+              <h4 class="font-label-md text-label-md text-on-surface mb-xs">
+                AI Processing
+              </h4>
+              <p class="font-body-md text-on-surface-variant text-sm">
+                AI kami menganalisis konten dan membuat ringkasan per slide
+                secara cerdas.
+              </p>
+            </div>
+            <!-- Step 3 -->
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="w-[64px] h-[64px] rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl shadow-lg mb-md ring-8 ring-background dark:ring-surface-dim">
+                3
+              </div>
+              <h4 class="font-label-md text-label-md text-on-surface mb-xs">
+                Pilih Template
+              </h4>
+              <p class="font-body-md text-on-surface-variant text-sm">
+                Sesuaikan gaya visual dengan memilih tema desain yang paling
+                cocok.
+              </p>
+            </div>
+            <!-- Step 4 -->
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="w-[64px] h-[64px] rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xl shadow-lg mb-md ring-8 ring-background dark:ring-surface-dim">
+                4
+              </div>
+              <h4 class="font-label-md text-label-md text-on-surface mb-xs">
+                Download
+              </h4>
+              <p class="font-body-md text-on-surface-variant text-sm">
+                Ekspor ke format .pptx yang bisa diedit di Microsoft
+                PowerPoint atau Canva.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Testimonials -->
+    <section class="max-w-[1280px] mx-auto px-md py-xl lg:py-[120px]">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-xl gap-md">
+        <div class="max-w-xl">
+          <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">
+            Dipercaya Oleh Ribuan Profesional
+          </h2>
+          <p class="font-body-md text-on-surface-variant">
+            Dengarkan apa kata mereka yang telah bertransformasi dengan
+            TextDeck AI.
+          </p>
+        </div>
+        <div class="flex gap-sm">
+          <button class="p-sm glass rounded-full hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <button class="p-sm glass rounded-full hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+        <!-- Testimonial 1 -->
+        <div
+          class="glass p-md rounded-2xl flex flex-col justify-between h-full border border-primary/10 shadow-[0_10px_30px_rgba(77,168,255,0.05)]">
+          <div>
+            <div class="flex gap-xs text-primary mb-md">
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+            </div>
+            <p class="font-body-md italic text-on-surface mb-lg">
+              "TextDeck menyelamatkan saya dari deadline presentasi kuartalan.
+              Hanya dalam 5 menit, draf presentasi saya selesai dengan visual
+              yang sangat profesional!"
+            </p>
+          </div>
+          <div class="flex items-center gap-md">
+            <img alt="Sarah J." class="w-xl h-xl rounded-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy7pH0nDCYMPQenck5A3Lni-j9MSidMWITSHcrZMBf5lSYeJK63a2y-XaJPtH5hCrvmG4RwP3sWgR4TCfH8vxfDnCX2b8JFb1UKVob3iurMsh53tUFDqfWQFN5P-Xw4BFgjF_ioV4BT5mOb1ik5a0gZRlLg6R1LU3xcSfPc39aSF6520PIjDU_j64vRCKIgki0A0jo-JRw1rEqTumWeUwwOid8YQjD9vA6OAR3DXoQcZB0N2dcXMnyGhtyfPVbVAzNDfMv7-KcTwk" />
+            <div>
+              <p class="font-label-md text-label-md">Sarah J.</p>
+              <p class="font-label-sm text-label-sm text-on-surface-variant">
+                Marketing Manager, TechCorp
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Testimonial 2 -->
+        <div
+          class="glass p-md rounded-2xl flex flex-col justify-between h-full border border-primary/10 shadow-[0_10px_30px_rgba(77,168,255,0.05)]">
+          <div>
+            <div class="flex gap-xs text-primary mb-md">
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+            </div>
+            <p class="font-body-md italic text-on-surface mb-lg">
+              "Sebagai pengajar, membuat slide materi setiap hari sangat
+              melelahkan. AI ini membantu menstrukturkan materi saya menjadi
+              poin-poin yang mudah dimengerti siswa."
+            </p>
+          </div>
+          <div class="flex items-center gap-md">
+            <img alt="Andi Kurniawan" class="w-xl h-xl rounded-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfltMaXGYl9hBr-tgljLzbgXZZQ5csctGcbJ5pi3DkqwWc-QcdRrIOq71wjMRqH0qAP7OqOKIRNe6t1I27AEjHPez20koTx9-wJE845s2ZhhQdFDZFS9WNcq4k5WvWOLB73LKq1lMvweWiWdOqdkezRlNPglliDtSCTVpLWj_v0a7Q_zoegvhJRcnsq022IVHc_WiP4ctWgr4ZtbIyUbGVVyTkJjGl9UR6VsdXHezGSIJKgrKaG2-W5eYZXCMbrc4yjxSJOUSeqvQ" />
+            <div>
+              <p class="font-label-md text-label-md">Andi Kurniawan</p>
+              <p class="font-label-sm text-label-sm text-on-surface-variant">
+                Dosen Desain Grafis
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Testimonial 3 (Visible on Desktop) -->
+        <div
+          class="glass p-md rounded-2xl hidden lg:flex flex-col justify-between h-full border border-primary/10 shadow-[0_10px_30px_rgba(77,168,255,0.05)]">
+          <div>
+            <div class="flex gap-xs text-primary mb-md">
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+              <span class="material-symbols-outlined text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1">star</span>
+            </div>
+            <p class="font-body-md italic text-on-surface mb-lg">
+              "Fitur ekspor PDF-nya sangat bersih. Tidak ada lagi masalah
+              formatting yang berantakan saat pindah perangkat. Benar-benar
+              game changer!"
+            </p>
+          </div>
+          <div class="flex items-center gap-md">
+            <img alt="Rina Wahyuni" class="w-xl h-xl rounded-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG3Molm0EUnjdjDmB-uCmnNA8sMshzvnzvN98O2aF84eKMlTq6vOgNo2XAfp1jJ45-LdtfNMX3qbqSfUY1YxJpy2GTnRxjXqt-kRqnA55-vNn7VNzt4rE22j-du80Vbrj9zIvpRgbwgxNG6RBicfV3VjXBPfc26nzGZ0Eqw9P69jgkpLBlROsV0sNmwhF63tXD0KCEp61fNixLfxImz1j1RAtkQf7Wv1ccKqAA2699o_BRqg9b71BHe8m2KTigMnN02S7KED4RYqc" />
+            <div>
+              <p class="font-label-md text-label-md">Rina Wahyuni</p>
+              <p class="font-label-sm text-label-sm text-on-surface-variant">
+                Business Analyst, DataFlow
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- CTA Section -->
+    <section class="max-w-[1280px] mx-auto px-md py-xl">
+      <div class="bg-primary rounded-[3rem] p-lg md:p-xl text-center relative overflow-hidden shadow-2xl">
+        <div class="absolute -top-xl -right-xl w-[300px] h-[300px] bg-white/20 rounded-full blur-[80px]"></div>
+        <div class="absolute -bottom-xl -left-xl w-[300px] h-[300px] bg-secondary/30 rounded-full blur-[80px]"></div>
+        <div class="relative z-10 space-y-md">
+          <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-primary">
+            Siap Membuat Slide Sempurna?
+          </h2>
+          <p class="font-body-lg text-white/80 max-w-xl mx-auto">
+            Bergabunglah dengan ribuan pengguna lain dan mulai transformasi
+            teks Anda sekarang.
+          </p>
+          <div class="pt-md">
+            <button
+              class="bg-white text-primary font-bold px-xl py-sm rounded-2xl hover:bg-surface-container transition-all shadow-xl hover:scale-105 active:scale-95">
+              Mulai Sekarang — Gratis!
+            </button>
+          </div>
+          <p class="font-label-sm text-label-sm text-white/60">
+            Tidak perlu kartu kredit untuk mencoba.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Footer -->
+  <footer
+    class="bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/20 transition-colors duration-300">
+    <div class="max-w-[1280px] mx-auto px-lg py-xl flex flex-col md:flex-row justify-between items-start gap-xl">
+      <div class="max-w-xs space-y-md">
+        <div class="flex items-center gap-xs">
+          <span class="material-symbols-outlined text-primary font-bold text-2xl">auto_awesome</span>
+          <span class="font-headline-md text-headline-md text-primary">TextDeck</span>
+        </div>
+        <p class="font-body-md text-on-surface-variant text-sm">
+          Platform AI tercanggih untuk mengubah ide Anda menjadi narasi visual
+          yang memukau dalam hitungan detik.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-xl">
+        <div class="space-y-sm">
+          <h5 class="font-label-md text-label-md text-on-surface uppercase">
+            Product
+          </h5>
+          <ul class="space-y-xs font-body-md text-sm text-on-surface-variant">
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Features</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Pricing</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Templates</a>
+            </li>
+          </ul>
+        </div>
+        <div class="space-y-sm">
+          <h5 class="font-label-md text-label-md text-on-surface uppercase">
+            Company
+          </h5>
+          <ul class="space-y-xs font-body-md text-sm text-on-surface-variant">
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">About Us</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Careers</a>
+            </li>
+            <li>
+              <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+            </li>
+          </ul>
+        </div>
+        <div class="space-y-sm">
+          <h5 class="font-label-md text-label-md text-on-surface uppercase">
+            Social
+          </h5>
+          <div class="flex gap-sm">
+            <a class="w-lg h-lg flex items-center justify-center rounded-full bg-surface-container hover:bg-primary hover:text-on-primary transition-all"
+              href="#"><span class="material-symbols-outlined">share</span></a>
+            <a class="w-lg h-lg flex items-center justify-center rounded-full bg-surface-container hover:bg-primary hover:text-on-primary transition-all"
+              href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="max-w-[1280px] mx-auto px-lg py-md border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-md">
+      <p class="font-label-sm text-label-sm text-on-surface-variant opacity-80">
+        © 2024 TextDeck AI. All rights reserved.
+      </p>
+      <div class="flex gap-md font-label-sm text-label-sm text-on-surface-variant">
+        <a class="hover:text-primary transition-colors" href="#">Sitemap</a>
+        <a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+        <a class="hover:text-primary transition-colors" href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+  <script src="js/navbar.js"></script>
+  <script src="js/LandingPage.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TextDeck AI - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="css/Dashboard.css" rel="stylesheet"/>
+<link href="css/navbar.css" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<!-- Reusable Navbar Component Container -->
+<div id="navbar-container"></div>
+<!-- Main -->
+<main class="pt-[90px] pb-16 px-4 md:px-12 max-w-[1280px] mx-auto main-grid grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column -->
+<section class="lg:col-span-5 flex flex-col gap-5">
+<!-- Source Content -->
+<div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-on-surface">Source Content</h2>
+<span class="material-symbols-outlined text-outline-variant">description</span>
+</div>
+<div class="relative group">
+<textarea class="w-full h-52 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary-container focus:border-primary outline-none transition-all resize-none leading-relaxed" id="sourceText" placeholder="Paste your content here or drag &amp; drop files...
+
+Example: Describe your topic, key points, data, or any text you want to turn into a presentation slide."></textarea>
+<div class="absolute bottom-3 right-3 flex gap-2">
+<label class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-outline-variant rounded-full text-xs font-semibold hover:bg-surface-container transition-colors shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">upload_file</span>
+            Upload File
+            <input accept=".txt,.md,.pdf" class="hidden" id="fileInput" type="file"/>
+</label>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 items-center">
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container/10 text-primary rounded-full text-xs font-semibold" id="aiStatus">
+<span class="w-2 h-2 rounded-full bg-primary ai-pulse"></span>
+          AI ready to generate
+        </div>
+<span class="text-xs text-on-surface-variant ml-auto" id="charCount">0 characters</span>
+</div>
+</div>
+<!-- Design Settings -->
+<div class="glass-card rounded-3xl p-6 flex flex-col gap-4">
+<h2 class="text-xl font-bold text-on-surface">Design Style</h2>
+<!-- Template Selector -->
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1">Template</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="template-btn selected text-xs font-semibold px-3 py-2 rounded-xl border border-outline-variant/50 bg-white hover:bg-surface-container transition-colors" data-template="futuristic">✦ Futuristic Glass</button>
+<button class="template-btn text-xs font-semibold px-3 py-2 rounded-xl border border-outline-variant/50 bg-white hover:bg-surface-container transition-colors" data-template="corporate">◼ Corporate Minimal</button>
+<button class="template-btn text-xs font-semibold px-3 py-2 rounded-xl border border-outline-variant/50 bg-white hover:bg-surface-container transition-colors" data-template="creative">◆ Creative Vibrant</button>
+<button class="template-btn text-xs font-semibold px-3 py-2 rounded-xl border border-outline-variant/50 bg-white hover:bg-surface-container transition-colors" data-template="dark">◉ Dark Mode Pro</button>
+</div>
+</div>
+<!-- Aspect Ratio -->
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1">Aspect Ratio</label>
+<select class="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-container outline-none appearance-none cursor-pointer" id="aspectRatio">
+<option value="16/9">16:9 Wide</option>
+<option value="4/3">4:3 Classic</option>
+<option value="1/1">1:1 Social</option>
+</select>
+</div>
+<!-- Slide Count -->
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-on-surface-variant px-1">Number of Slides</label>
+<div class="flex gap-2">
+<input class="flex-1 accent-primary h-2 rounded-full cursor-pointer mt-2" id="slideCount" max="10" min="1" type="range" value="3"/>
+<span class="text-sm font-bold text-primary min-w-[24px] text-center pt-1" id="slideCountVal">3</span>
+</div>
+</div>
+<!-- Generate Button -->
+<button class="group relative w-full mt-1 bg-primary text-on-primary py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 overflow-hidden shadow-[0_8px_16px_rgba(0,97,163,0.28)] hover:shadow-[0_12px_24px_rgba(0,97,163,0.38)] transition-all active:scale-95 text-sm" id="generateBtn">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform" id="genIcon">bolt</span>
+<span id="genText">Generate Slides</span>
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+</div>
+</section>
+<!-- Right Column -->
+<section class="lg:col-span-7 flex flex-col gap-5">
+<div class="glass-card rounded-3xl p-6 flex flex-col gap-5 h-full">
+<!-- Preview Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<h2 class="text-xl font-bold text-on-surface">Live Preview</h2>
+<span class="px-3 py-0.5 bg-tertiary-container/20 text-tertiary rounded-full text-xs font-bold" id="slideLabel">No slides yet</span>
+</div>
+<div class="flex gap-1">
+<button class="p-2 hover:bg-surface-container rounded-xl transition-colors" id="prevBtn" title="Previous slide">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-xl transition-colors" id="nextBtn" title="Next slide">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-xl transition-colors" id="fullscreenBtn" title="Fullscreen">
+<span class="material-symbols-outlined text-[20px]">fullscreen</span>
+</button>
+</div>
+</div>
+<!-- Slide Canvas -->
+<div class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 slide-card transition-all duration-500" id="slideCanvas">
+<!-- Default empty state -->
+<div class="slide-card-content flex flex-col items-center justify-center h-full min-h-[240px] p-8 text-center">
+<span class="material-symbols-outlined text-white/20 text-[64px] mb-4">auto_awesome</span>
+<p class="text-white/40 text-sm font-medium">Your generated slides will appear here</p>
+<p class="text-white/25 text-xs mt-1">Enter content on the left and click Generate Slides</p>
+</div>
+</div>
+<!-- Slide Thumbnails -->
+<div class="hidden flex gap-2 overflow-x-auto pb-1" id="thumbRow">
+</div>
+<!-- Stream Output (shown during generation) -->
+<div class="hidden bg-surface-container-low rounded-2xl p-4 text-xs font-mono text-on-surface-variant leading-relaxed max-h-28 overflow-y-auto border border-outline-variant/20" id="streamBox">
+<span id="streamText"></span><span class="inline-block w-1 h-3 bg-primary ml-0.5 ai-pulse"></span>
+</div>
+<!-- Export Controls -->
+<div class="grid grid-cols-2 gap-4 mt-auto">
+<button class="flex items-center justify-center gap-2 bg-surface-container-high text-on-surface py-4 rounded-2xl font-semibold hover:bg-surface-variant transition-colors active:scale-95 text-sm" id="editBtn">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+          Edit Slide
+        </button>
+<button class="flex items-center justify-center gap-2 bg-secondary text-on-secondary py-4 rounded-2xl font-semibold shadow-lg hover:bg-on-secondary-fixed-variant transition-all active:scale-95 text-sm" id="downloadBtn">
+<span class="material-symbols-outlined text-[18px]">download</span>
+          Download HTML
+        </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Edit Modal -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" id="editModal">
+<div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-on-surface">Edit Slide Content</h3>
+<button class="p-2 hover:bg-surface-container rounded-xl transition-colors" id="closeModal">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-3">
+<div>
+<label class="text-xs font-semibold text-on-surface-variant mb-1 block">Badge / Label</label>
+<input class="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-container" id="editBadge" type="text"/>
+</div>
+<div>
+<label class="text-xs font-semibold text-on-surface-variant mb-1 block">Title</label>
+<input class="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-container" id="editTitle" type="text"/>
+</div>
+<div>
+<label class="text-xs font-semibold text-on-surface-variant mb-1 block">Body Text</label>
+<textarea class="w-full h-28 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm outline-none resize-none focus:ring-2 focus:ring-primary-container leading-relaxed" id="editBody"></textarea>
+</div>
+<div class="hidden" id="editBullets">
+<label class="text-xs font-semibold text-on-surface-variant mb-1 block">Bullet Points (one per line)</label>
+<textarea class="w-full h-24 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-2.5 text-sm outline-none resize-none focus:ring-2 focus:ring-primary-container leading-relaxed" id="editBulletsInput"></textarea>
+</div>
+</div>
+<div class="flex gap-3 justify-end">
+<button class="px-5 py-2.5 rounded-xl border border-outline-variant text-sm font-semibold hover:bg-surface-container transition-colors" id="cancelEdit">Cancel</button>
+<button class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:bg-on-primary-fixed-variant transition-colors active:scale-95" id="applyEdit">Apply Changes</button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full border-t border-outline-variant/20 bg-surface-container-low">
+<div class="max-w-[1280px] mx-auto px-6 md:px-12 py-10 flex flex-col md:flex-row justify-between items-center gap-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>
+<span class="text-xl font-bold text-primary">TextDeck AI</span>
+</div>
+<div class="flex gap-8">
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+<p class="text-xs text-on-surface-variant opacity-70">© 2024 TextDeck AI. All rights reserved.</p>
+</div>
+</footer>
+<script src="js/navbar.js"></script>
+<script src="js/Dashboard.js"></script>
+</body>
+</html>
