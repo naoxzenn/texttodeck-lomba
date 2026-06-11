@@ -401,5 +401,88 @@ ${body}
   }
   renderEmpty();
   syncNav();
+}
 
-}); // end DOMContentLoaded
+// ── Health Check System ──
+window.dashboardHealthCheck = function() {
+  const details = [];
+  let status = "healthy";
+
+  const modules = {
+    InputProcessor: typeof InputProcessor,
+    ContentAnalyzer: typeof ContentAnalyzer,
+    Summarizer: typeof Summarizer,
+    OutlineBuilder: typeof OutlineBuilder,
+    SlidePlanner: typeof SlidePlanner,
+    FlashcardGenerator: typeof FlashcardGenerator,
+    TemplateEngine: typeof TemplateEngine,
+    SlideRenderer: typeof SlideRenderer
+  };
+
+  for (const [name, type] of Object.entries(modules)) {
+    if (type === "undefined") {
+      status = "unhealthy";
+      details.push({ component: name, status: "missing", type: "script" });
+    } else {
+      details.push({ component: name, status: "loaded", type: "script" });
+    }
+  }
+
+  const requiredIds = [
+    "sourceText", "fileInput", "charCount", "slideCountVal", "generateBtn",
+    "generateFcBtn", "slideCanvas", "thumbRow", "streamBox", "streamText",
+    "prevBtn", "nextBtn", "fullscreenBtn", "editBtn", "downloadBtn",
+    "slideLabel", "editModal", "editBadge", "editTitle", "editBody",
+    "editBullets", "editBulletsInput", "applyEdit", "cancelEdit", "closeModal",
+    "sampleTextBtn", "exportModal", "closeExportModal", "exportHtmlBtn",
+    "exportPdfBtn", "exportPptxBtn"
+  ];
+
+  requiredIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) {
+      status = "unhealthy";
+      details.push({ component: `#${id}`, status: "missing", type: "DOM" });
+    } else {
+      details.push({ component: `#${id}`, status: "present", type: "DOM" });
+    }
+  });
+
+  if (typeof InputProcessor !== "undefined" &&
+      typeof ContentAnalyzer !== "undefined" &&
+      typeof OutlineBuilder !== "undefined" &&
+      typeof SlidePlanner !== "undefined" &&
+      typeof TemplateEngine !== "undefined") {
+    try {
+      const cleaned = InputProcessor.process("Cristiano Ronaldo adalah pemain bola.");
+      const analysis = ContentAnalyzer.analyze(cleaned);
+      const outline = OutlineBuilder.build(analysis);
+      const planned = SlidePlanner.plan(outline);
+      const styled = TemplateEngine.apply(planned, "corporate");
+      if (styled && styled.length > 0) {
+        details.push({ component: "Pipeline test generation", status: "passed", type: "logic" });
+      } else {
+        status = "unhealthy";
+        details.push({ component: "Pipeline test generation", status: "returned empty slides", type: "logic" });
+      }
+    } catch (err) {
+      status = "unhealthy";
+      details.push({ component: "Pipeline test generation", status: "error", error: err.message, type: "logic" });
+    }
+  } else {
+    status = "unhealthy";
+    details.push({ component: "Pipeline test generation", status: "skipped due to missing scripts", type: "logic" });
+  }
+
+  return { status, details };
+};
+
+// ── Startup ──
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    initializeDashboard();
+    console.log("Health Check Result:", window.dashboardHealthCheck());
+  } catch (error) {
+    console.error("Dashboard Initialization Failed", error);
+  }
+});
