@@ -1,5 +1,5 @@
 /**
- * TextDeck AI — dashboard.js
+ * TextDeck AI — Dashboard.js
  * Integrated with the 4-layer template-engine.js.
  */
 

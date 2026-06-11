@@ -1,7 +1,7 @@
 /**
  * TextDeck AI — Login Page Logic
  * Handles: reverse route guard, input validation, mock JWT auth,
- * remember-me storage, and redirect to dashboard.
+ * remember-me storage, and redirect to Dashboard.
  */
 
 // ─────────────────────────────────────────────────
@@ -13,7 +13,7 @@
     localStorage.getItem("authToken") ||
     sessionStorage.getItem("authToken");
   if (token) {
-    window.location.replace("dashboard.html");
+    window.location.replace("Dashboard.html");
   }
 })();
 
@@ -226,7 +226,7 @@ document.querySelectorAll("input").forEach(function (input) {
       sessionStorage.setItem("userSession", userSession);
     }
 
-    // --- Redirect to dashboard ---
-    window.location.href = "dashboard.html";
+    // --- Redirect to Dashboard ---
+    window.location.href = "Dashboard.html";
   });
 })();
