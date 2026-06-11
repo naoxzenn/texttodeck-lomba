@@ -29,9 +29,9 @@ function initNavbar() {
   const filename = path.substring(path.lastIndexOf("/") + 1) || "index.html";
 
   let currentPage = "home";
-  if (filename.includes("Dashboard.html")) {
-    currentPage = "Dashboard";
-  } else if (filename.includes("TemplatesGallerry.html")) {
+  if (filename.includes("dashboard.html")) {
+    currentPage = "dashboard";
+  } else if (filename.includes("Templates.html")) {
     currentPage = "templates";
   } else if (filename.includes("Settings.html")) {
     currentPage = "settings";

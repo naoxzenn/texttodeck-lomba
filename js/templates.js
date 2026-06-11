@@ -183,7 +183,7 @@ function useTemplate(id) {
   const tplKey = mapping[id] || 'corporate';
   localStorage.setItem('selectedTemplate', tplKey);
   showToast(`✓ Membuka "${t.title}"…`);
-  setTimeout(() => { window.location.href = 'Dashboard.html'; }, 900);
+  setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
 }
 
 // ── Reset filter ───────────────────────────────────

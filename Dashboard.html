@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>TextDeck - Dashboard</title>
+<title>TextDeck - dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <!-- Export libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -14,9 +14,9 @@
 <link href="css/global.css" rel="stylesheet"/>
 <link href="css/navbar.css" rel="stylesheet"/>
 <link href="css/profile-menu.css" rel="stylesheet"/>
-<link href="css/Dashboard.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
 
-<!-- ── VISUAL ENHANCEMENTS: Scoped style block for Dashboard-specific  ── -->
+<!-- ── VISUAL ENHANCEMENTS: Scoped style block for dashboard-specific  ── -->
 <style>
   /* === BACKGROUND: Premium multi-stop mesh gradient replaces flat #faf8ff === */
   body {
@@ -594,7 +594,15 @@
 
 <script src="js/profile-menu.js"></script>
 <script src="js/navbar.js"></script>
+<!-- Pipeline modules (dependency order) -->
+<script src="js/input-processor.js"></script>
+<script src="js/content-analyzer.js"></script>
+<script src="js/summarizer.js"></script>
+<script src="js/outline-builder.js"></script>
+<script src="js/slide-planner.js"></script>
+<script src="js/flashcard-generator.js"></script>
 <script src="js/template-engine.js"></script>
-<script src="js/Dashboard.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>
