@@ -183,7 +183,7 @@ function useTemplate(id) {
   const tplKey = mapping[id] || 'corporate';
   localStorage.setItem('selectedTemplate', tplKey);
   showToast(`✓ Membuka "${t.title}"…`);
-  setTimeout(() => { window.location.href = 'Dashboard.html'; }, 900);
+  setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
 }
 
 // ── Reset filter ───────────────────────────────────
@@ -203,38 +203,54 @@ function openModal(id) {
   const t = TEMPLATES.find(x => x.id === id);
   modalId = id;
   const modal = document.getElementById('previewModal');
+  if (!modal) return;
 
   const badgeEl = document.getElementById('pBadge');
-  badgeEl.textContent = t.cat;
-  badgeEl.className = `text-[11px] font-bold uppercase px-3 py-0.5 rounded-full ${BADGE_COLORS[t.cat] || 'badge-business'}`;
+  if (badgeEl) {
+    badgeEl.textContent = t.cat;
+    badgeEl.className = `text-[11px] font-bold uppercase px-3 py-0.5 rounded-full ${BADGE_COLORS[t.cat] || 'badge-business'}`;
+  }
 
-  document.getElementById('pTitle').textContent = t.title;
-  document.getElementById('pDesc').textContent = t.desc;
-  document.getElementById('pTags').innerHTML = t.tags.map(tg =>
-    `<span class="px-3 py-1 bg-surface-container rounded-full text-xs font-medium text-on-surface-variant">${tg}</span>`
-  ).join('');
+  const titleEl = document.getElementById('pTitle');
+  if (titleEl) titleEl.textContent = t.title;
+
+  const descEl = document.getElementById('pDesc');
+  if (descEl) descEl.textContent = t.desc;
+
+  const tagsEl = document.getElementById('pTags');
+  if (tagsEl) {
+    tagsEl.innerHTML = t.tags.map(tg =>
+      `<span class="px-3 py-1 bg-surface-container rounded-full text-xs font-medium text-on-surface-variant">${tg}</span>`
+    ).join('');
+  }
 
   const titleC = t.light ? t.accent : '#ffffff';
   const subC = t.light ? '#404752' : '#c8d8ee';
-  document.getElementById('pSlide').innerHTML = `
-    <div style="width:100%;height:100%;background:${t.bg};position:relative;overflow:hidden;display:flex;align-items:center;font-family:Inter,sans-serif;">
-      <div style="display:none;"></div>
-      <div style="position:relative;z-index:2;padding:clamp(16px,5%,48px);width:100%;">
-        <div style="font-size:10px;font-weight:700;color:${t.accent};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">${t.cat}</div>
-        <div style="font-size:clamp(16px,3vw,26px);font-weight:700;color:${titleC};line-height:1.2;max-width:80%;margin-bottom:10px;">${t.title}</div>
-        <div style="font-size:12px;color:${subC};line-height:1.6;max-width:70%;">${t.desc}</div>
-        <div style="margin-top:14px;display:flex;gap:8px;">
-          ${t.tags.slice(0, 2).map(tg => `<span style="padding:3px 10px;background:#1a2a3a;border:1px solid ${t.accent};color:${t.accent};border-radius:999px;font-size:10px;font-weight:600;">${tg}</span>`).join('')}
+  const pSlide = document.getElementById('pSlide');
+  if (pSlide) {
+    pSlide.innerHTML = `
+      <div style="width:100%;height:100%;background:${t.bg};position:relative;overflow:hidden;display:flex;align-items:center;font-family:Inter,sans-serif;">
+        <div style="display:none;"></div>
+        <div style="position:relative;z-index:2;padding:clamp(16px,5%,48px);width:100%;">
+          <div style="font-size:10px;font-weight:700;color:${t.accent};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">${t.cat}</div>
+          <div style="font-size:clamp(16px,3vw,26px);font-weight:700;color:${titleC};line-height:1.2;max-width:80%;margin-bottom:10px;">${t.title}</div>
+          <div style="font-size:12px;color:${subC};line-height:1.6;max-width:70%;">${t.desc}</div>
+          <div style="margin-top:14px;display:flex;gap:8px;">
+            ${t.tags.slice(0, 2).map(tg => `<span style="padding:3px 10px;background:#1a2a3a;border:1px solid ${t.accent};color:${t.accent};border-radius:999px;font-size:10px;font-weight:600;">${tg}</span>`).join('')}
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
+  }
 
   // Thumbs (3 colour variations)
-  const vars = [t.bg, t.bg.replace('135deg', '155deg'), t.bg.replace('135deg', '115deg')];
-  document.getElementById('pThumbs').innerHTML = vars.map((bg, i) => `
-    <div style="flex:0 0 110px;height:62px;border-radius:8px;overflow:hidden;background:${bg};border:2px solid ${i === 0 ? t.accent : '#334155'};cursor:pointer;transition:border-color .15s;position:relative;">
-      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#94a3b8;">Slide ${i + 1}</div>
-    </div>`).join('');
+  const pThumbs = document.getElementById('pThumbs');
+  if (pThumbs) {
+    const vars = [t.bg, t.bg.replace('135deg', '155deg'), t.bg.replace('135deg', '115deg')];
+    pThumbs.innerHTML = vars.map((bg, i) => `
+      <div style="flex:0 0 110px;height:62px;border-radius:8px;overflow:hidden;background:${bg};border:2px solid ${i === 0 ? t.accent : '#334155'};cursor:pointer;transition:border-color .15s;position:relative;">
+        <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#94a3b8;">Slide ${i + 1}</div>
+      </div>`).join('');
+  }
 
   updateModalFav();
   modal.classList.remove('hidden');
@@ -243,6 +259,7 @@ function openModal(id) {
 
 function updateModalFav() {
   const icon = document.getElementById('pFavIcon');
+  if (!icon) return;
   if (starred.has(modalId)) {
     icon.className = 'fill-icon material-symbols-outlined text-[18px]';
     icon.style.color = '#f59e0b';
@@ -254,51 +271,91 @@ function updateModalFav() {
 
 function closeModal() {
   const modal = document.getElementById('previewModal');
+  if (!modal) return;
   modal.style.opacity = '0';
   setTimeout(() => { modal.classList.add('hidden'); modalId = null; }, 220);
 }
-document.getElementById('closeModal').addEventListener('click', closeModal);
-document.getElementById('previewModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
-document.getElementById('pFavBtn').addEventListener('click', () => { if (modalId) toggleStar(modalId); });
-document.getElementById('pUseBtn').addEventListener('click', () => { if (modalId) useTemplate(modalId); });
 
-// ── Category filter ────────────────────────────────
-document.querySelectorAll('.category-pill').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.category-pill').forEach(b => {
-      b.classList.remove('active');
-      b.classList.add('bg-white', 'border-outline-variant', 'text-on-surface-variant');
+// ── DOM Initializer ─────────────────────────────────
+function initializeTemplates() {
+  const elCloseModal = document.getElementById('closeModal');
+  if (elCloseModal) elCloseModal.addEventListener('click', closeModal);
+
+  const elPreviewModal = document.getElementById('previewModal');
+  if (elPreviewModal) {
+    elPreviewModal.addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
     });
-    btn.classList.add('active');
-    btn.classList.remove('bg-white', 'border-outline-variant', 'text-on-surface-variant');
-    currentCat = btn.dataset.cat;
-    visibleN = 6;
-    renderGrid();
+  }
+
+  const elFavBtn = document.getElementById('pFavBtn');
+  if (elFavBtn) {
+    elFavBtn.addEventListener('click', () => {
+      if (modalId) toggleStar(modalId);
+    });
+  }
+
+  const elUseBtn = document.getElementById('pUseBtn');
+  if (elUseBtn) {
+    elUseBtn.addEventListener('click', () => {
+      if (modalId) useTemplate(modalId);
+    });
+  }
+
+  // Category filter
+  document.querySelectorAll('.category-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.category-pill').forEach(b => {
+        b.classList.remove('active');
+        b.classList.add('bg-white', 'border-outline-variant', 'text-on-surface-variant');
+      });
+      btn.classList.add('active');
+      btn.classList.remove('bg-white', 'border-outline-variant', 'text-on-surface-variant');
+      currentCat = btn.dataset.cat;
+      visibleN = 6;
+      renderGrid();
+    });
   });
-});
 
-// ── Search ─────────────────────────────────────────
-let searchT;
-document.getElementById('searchInput').addEventListener('input', function () {
-  clearTimeout(searchT);
-  searchT = setTimeout(() => {
-    currentQ = this.value.trim().toLowerCase();
-    visibleN = 6;
-    renderGrid();
-  }, 200);
-});
+  // Search
+  const elSearchInput = document.getElementById('searchInput');
+  if (elSearchInput) {
+    let searchT;
+    elSearchInput.addEventListener('input', function () {
+      clearTimeout(searchT);
+      searchT = setTimeout(() => {
+        currentQ = this.value.trim().toLowerCase();
+        visibleN = 6;
+        renderGrid();
+      }, 200);
+    });
+  }
 
-// ── Load More ──────────────────────────────────────
-document.getElementById('loadMoreBtn').addEventListener('click', () => {
-  visibleN += 6; renderGrid();
-});
+  // Load More
+  const elLoadMoreBtn = document.getElementById('loadMoreBtn');
+  if (elLoadMoreBtn) {
+    elLoadMoreBtn.addEventListener('click', () => {
+      visibleN += 6;
+      renderGrid();
+    });
+  }
 
-// ── Background parallax ────────────────────────────
-document.addEventListener('mousemove', e => {
-  const x = (e.clientX / window.innerWidth * 100).toFixed(1);
-  const y = (e.clientY / window.innerHeight * 70).toFixed(1);
-  document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #d1e4ff 0%, #faf8ff 70%)`;
-});
+  // Background parallax
+  document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth * 100).toFixed(1);
+    const y = (e.clientY / window.innerHeight * 70).toFixed(1);
+    document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #d1e4ff 0%, #faf8ff 70%)`;
+  });
 
-// ── Init ───────────────────────────────────────────
-renderGrid();
+  // Initial Render
+  renderGrid();
+}
+
+// ── Startup ──
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    initializeTemplates();
+  } catch (error) {
+    console.error("Templates Gallery Initialization Failed", error);
+  }
+});

@@ -12,7 +12,7 @@
  * ═══════════════════════════════════════════════════════
  */
 
-document.addEventListener("DOMContentLoaded", () => {
+function initializeDashboard() {
 
   /* ── STATE ─────────────────────────────────────────────────── */
   const state = {

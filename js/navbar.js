@@ -25,15 +25,14 @@ function loadNavbar() {
 
 function initNavbar() {
   // 1. Detect current page and apply active class
-  const path = window.location.pathname;
-  const filename = path.substring(path.lastIndexOf("/") + 1) || "index.html";
+  const path = window.location.pathname.toLowerCase();
 
   let currentPage = "home";
-  if (filename.includes("Dashboard.html")) {
+  if (path.includes("dashboard")) {
     currentPage = "dashboard";
-  } else if (filename.includes("Templates.html")) {
+  } else if (path.includes("templates")) {
     currentPage = "templates";
-  } else if (filename.includes("Settings.html")) {
+  } else if (path.includes("settings")) {
     currentPage = "settings";
   }
 

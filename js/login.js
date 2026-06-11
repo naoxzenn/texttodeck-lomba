@@ -13,7 +13,7 @@
     localStorage.getItem("authToken") ||
     sessionStorage.getItem("authToken");
   if (token) {
-    window.location.replace("Dashboard.html");
+    window.location.replace("dashboard.html");
   }
 })();
 
@@ -227,6 +227,6 @@ document.querySelectorAll("input").forEach(function (input) {
     }
 
     // --- Redirect to dashboard ---
-    window.location.href = "Dashboard.html";
+    window.location.href = "dashboard.html";
   });
 })();
