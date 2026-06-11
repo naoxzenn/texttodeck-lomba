@@ -24,30 +24,30 @@ tailwind.config = {
 
 // ── Data ───────────────────────────────────────────
 const TEMPLATES = [
-  { id:1,  title:'Executive Report',    cat:'Business',   desc:'Professional structure for data-driven executive summaries and quarterly business reviews.',       tags:['Executive','Report','Data'],       bg:'linear-gradient(135deg,#001d36,#003a6b)', accent:'#4da8ff' },
-  { id:2,  title:'Curriculum Guide',    cat:'Education',  desc:'Syllabus and lesson plan templates optimized for clear learning objectives and student engagement.',tags:['Syllabus','Lesson Plan','Learning'], bg:'linear-gradient(135deg,#001f27,#003344)', accent:'#64d5f4' },
-  { id:3,  title:'API Documentation',   cat:'Technology', desc:'Structured documentation for software projects, featuring clean code blocks and endpoint descriptions.',tags:['Developer','API','Docs'],           bg:'linear-gradient(135deg,#00174b,#002a7a)', accent:'#b4c5ff' },
-  { id:4,  title:'Creative Portfolio',  cat:'Creative',   desc:'Bold layouts designed to showcase visual work and personal branding with maximum impact.',          tags:['Portfolio','Branding','Visual'],    bg:'linear-gradient(135deg,#1a0533,#2d0a5a)', accent:'#c084fc' },
-  { id:5,  title:'Pure Document',       cat:'Minimalist', desc:'Distraction-free template for long-form writing, research papers, and clean academic work.',        tags:['Academic','Research','Writing'],    bg:'linear-gradient(160deg,#f0f4f8,#e8edf5)', accent:'#0061a3', light:true },
-  { id:6,  title:'Growth Plan',         cat:'Business',   desc:'Dynamic templates for marketing strategies, campaign tracking, and growth projections.',            tags:['Marketing','Growth','Campaign'],    bg:'linear-gradient(135deg,#001836,#002d58)', accent:'#9ecaff' },
-  { id:7,  title:'Investor Pitch Deck', cat:'Business',   desc:'High-converting slide structure built for startup funding rounds and venture capital pitches.',     tags:['Startup','Pitch','VC'],             bg:'linear-gradient(135deg,#0a1627,#0f2848)', accent:'#4da8ff' },
-  { id:8,  title:'Science Lab Report',  cat:'Education',  desc:'Structured academic format for experiments, hypotheses, and data-backed scientific conclusions.',   tags:['Science','Experiment','Lab'],       bg:'linear-gradient(135deg,#052e16,#0a3d1e)', accent:'#86efac' },
-  { id:9,  title:'Cyber Defense Brief', cat:'Technology', desc:'Network security and threat analysis template with dark glassmorphic overlays and data nodes.',     tags:['Security','Network','Threat'],      bg:'linear-gradient(135deg,#000d18,#001830)', accent:'#22d3ee' },
-  { id:10, title:'Brand Moodboard',     cat:'Creative',   desc:'Colorful and expressive layouts for brand identity workshops, agency pitches, and mood boards.',    tags:['Brand','Agency','Workshop'],       bg:'linear-gradient(135deg,#2d0808,#4a0f0f)', accent:'#fca5a5' },
-  { id:11, title:'Zen Minimal',         cat:'Minimalist', desc:'Ultra-clean layout with vast whitespace and sharp typography for luxury or professional briefs.',    tags:['Clean','Luxury','Brief'],           bg:'linear-gradient(160deg,#f8fafc,#eef2f7)', accent:'#0051d5', light:true },
-  { id:12, title:'AI Research Paper',   cat:'Technology', desc:'Modern layout for presenting ML models, neural architectures, and AI research findings visually.',  tags:['AI','Research','ML'],               bg:'linear-gradient(135deg,#050510,#0d1120)', accent:'#818cf8' },
+  { id: 1, title: 'Executive Report', cat: 'Business', desc: 'Professional structure for data-driven executive summaries and quarterly business reviews.', tags: ['Executive', 'Report', 'Data'], bg: 'linear-gradient(135deg,#001d36,#003a6b)', accent: '#4da8ff' },
+  { id: 2, title: 'Curriculum Guide', cat: 'Education', desc: 'Syllabus and lesson plan templates optimized for clear learning objectives and student engagement.', tags: ['Syllabus', 'Lesson Plan', 'Learning'], bg: 'linear-gradient(135deg,#001f27,#003344)', accent: '#64d5f4' },
+  { id: 3, title: 'API Documentation', cat: 'Technology', desc: 'Structured documentation for software projects, featuring clean code blocks and endpoint descriptions.', tags: ['Developer', 'API', 'Docs'], bg: 'linear-gradient(135deg,#00174b,#002a7a)', accent: '#b4c5ff' },
+  { id: 4, title: 'Creative Portfolio', cat: 'Creative', desc: 'Bold layouts designed to showcase visual work and personal branding with maximum impact.', tags: ['Portfolio', 'Branding', 'Visual'], bg: 'linear-gradient(135deg,#1a0533,#2d0a5a)', accent: '#c084fc' },
+  { id: 5, title: 'Pure Document', cat: 'Minimalist', desc: 'Distraction-free template for long-form writing, research papers, and clean academic work.', tags: ['Academic', 'Research', 'Writing'], bg: 'linear-gradient(160deg,#f0f4f8,#e8edf5)', accent: '#0061a3', light: true },
+  { id: 6, title: 'Growth Plan', cat: 'Business', desc: 'Dynamic templates for marketing strategies, campaign tracking, and growth projections.', tags: ['Marketing', 'Growth', 'Campaign'], bg: 'linear-gradient(135deg,#001836,#002d58)', accent: '#9ecaff' },
+  { id: 7, title: 'Investor Pitch Deck', cat: 'Business', desc: 'High-converting slide structure built for startup funding rounds and venture capital pitches.', tags: ['Startup', 'Pitch', 'VC'], bg: 'linear-gradient(135deg,#0a1627,#0f2848)', accent: '#4da8ff' },
+  { id: 8, title: 'Science Lab Report', cat: 'Education', desc: 'Structured academic format for experiments, hypotheses, and data-backed scientific conclusions.', tags: ['Science', 'Experiment', 'Lab'], bg: 'linear-gradient(135deg,#052e16,#0a3d1e)', accent: '#86efac' },
+  { id: 9, title: 'Cyber Defense Brief', cat: 'Technology', desc: 'Network security and threat analysis template with dark glassmorphic overlays and data nodes.', tags: ['Security', 'Network', 'Threat'], bg: 'linear-gradient(135deg,#000d18,#001830)', accent: '#22d3ee' },
+  { id: 10, title: 'Brand Moodboard', cat: 'Creative', desc: 'Colorful and expressive layouts for brand identity workshops, agency pitches, and mood boards.', tags: ['Brand', 'Agency', 'Workshop'], bg: 'linear-gradient(135deg,#2d0808,#4a0f0f)', accent: '#fca5a5' },
+  { id: 11, title: 'Zen Minimal', cat: 'Minimalist', desc: 'Ultra-clean layout with vast whitespace and sharp typography for luxury or professional briefs.', tags: ['Clean', 'Luxury', 'Brief'], bg: 'linear-gradient(160deg,#f8fafc,#eef2f7)', accent: '#0051d5', light: true },
+  { id: 12, title: 'AI Research Paper', cat: 'Technology', desc: 'Modern layout for presenting ML models, neural architectures, and AI research findings visually.', tags: ['AI', 'Research', 'ML'], bg: 'linear-gradient(135deg,#050510,#0d1120)', accent: '#818cf8' },
 ];
 
 const BADGE_COLORS = {
-  Business:'badge-business', Education:'badge-education',
-  Technology:'badge-technology', Creative:'badge-creative', Minimalist:'badge-minimalist'
+  Business: 'badge-business', Education: 'badge-education',
+  Technology: 'badge-technology', Creative: 'badge-creative', Minimalist: 'badge-minimalist'
 };
 
-let currentCat  = 'all';
-let currentQ    = '';
-let visibleN    = 6;
-let starred     = new Set(JSON.parse(localStorage.getItem('td2_fav') || '[]'));
-let modalId     = null;
+let currentCat = 'all';
+let currentQ = '';
+let visibleN = 6;
+let starred = new Set(JSON.parse(localStorage.getItem('td2_fav') || '[]'));
+let modalId = null;
 
 // ── Toast ──────────────────────────────────────────
 function showToast(m) {
@@ -62,18 +62,18 @@ function showToast(m) {
 function filtered() {
   return TEMPLATES.filter(t => {
     const catOk = currentCat === 'all' || t.cat === currentCat;
-    const qOk   = !currentQ || t.title.toLowerCase().includes(currentQ) || t.cat.toLowerCase().includes(currentQ) || t.tags.some(tg => tg.toLowerCase().includes(currentQ));
+    const qOk = !currentQ || t.title.toLowerCase().includes(currentQ) || t.cat.toLowerCase().includes(currentQ) || t.tags.some(tg => tg.toLowerCase().includes(currentQ));
     return catOk && qOk;
   });
 }
 
 function renderGrid() {
-  const list   = filtered();
-  const shown  = list.slice(0, visibleN);
-  const grid   = document.getElementById('templateGrid');
-  const empty  = document.getElementById('emptyState');
+  const list = filtered();
+  const shown = list.slice(0, visibleN);
+  const grid = document.getElementById('templateGrid');
+  const empty = document.getElementById('emptyState');
   const lmWrap = document.getElementById('loadMoreWrap');
-  const count  = document.getElementById('resultCount');
+  const count = document.getElementById('resultCount');
 
   count.textContent = `Menampilkan ${Math.min(visibleN, list.length)} dari ${list.length} template`;
   empty.classList.toggle('hidden', list.length > 0);
@@ -89,7 +89,7 @@ function renderGrid() {
     div.dataset.id = t.id;
 
     const titleColor = t.light ? t.accent : '#ffffff';
-    const subColor   = t.light ? '#404752' : '#c8d8ee';
+    const subColor = t.light ? '#404752' : '#c8d8ee';
 
     div.innerHTML = `
       <div class="relative overflow-hidden" style="height:220px;">
@@ -183,7 +183,7 @@ function useTemplate(id) {
   const tplKey = mapping[id] || 'corporate';
   localStorage.setItem('selectedTemplate', tplKey);
   showToast(`✓ Membuka "${t.title}"…`);
-  setTimeout(() => { window.location.href = 'Dashboard.html'; }, 900);
+  setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
 }
 
 // ── Reset filter ───────────────────────────────────
@@ -191,7 +191,7 @@ function resetFilter() {
   currentCat = 'all'; currentQ = '';
   document.querySelectorAll('.category-pill').forEach(b => {
     b.classList.remove('active');
-    b.classList.add('bg-white','border-outline-variant','text-on-surface-variant');
+    b.classList.add('bg-white', 'border-outline-variant', 'text-on-surface-variant');
   });
   document.querySelector('[data-cat="all"]').classList.add('active');
   document.getElementById('searchInput').value = '';
@@ -215,7 +215,7 @@ function openModal(id) {
   ).join('');
 
   const titleC = t.light ? t.accent : '#ffffff';
-  const subC   = t.light ? '#404752' : '#c8d8ee';
+  const subC = t.light ? '#404752' : '#c8d8ee';
   document.getElementById('pSlide').innerHTML = `
     <div style="width:100%;height:100%;background:${t.bg};position:relative;overflow:hidden;display:flex;align-items:center;font-family:Inter,sans-serif;">
       <div style="display:none;"></div>
@@ -224,16 +224,16 @@ function openModal(id) {
         <div style="font-size:clamp(16px,3vw,26px);font-weight:700;color:${titleC};line-height:1.2;max-width:80%;margin-bottom:10px;">${t.title}</div>
         <div style="font-size:12px;color:${subC};line-height:1.6;max-width:70%;">${t.desc}</div>
         <div style="margin-top:14px;display:flex;gap:8px;">
-          ${t.tags.slice(0,2).map(tg=>`<span style="padding:3px 10px;background:#1a2a3a;border:1px solid ${t.accent};color:${t.accent};border-radius:999px;font-size:10px;font-weight:600;">${tg}</span>`).join('')}
+          ${t.tags.slice(0, 2).map(tg => `<span style="padding:3px 10px;background:#1a2a3a;border:1px solid ${t.accent};color:${t.accent};border-radius:999px;font-size:10px;font-weight:600;">${tg}</span>`).join('')}
         </div>
       </div>
     </div>`;
 
   // Thumbs (3 colour variations)
-  const vars = [t.bg, t.bg.replace('135deg', '155deg'), t.bg.replace('135deg','115deg')];
+  const vars = [t.bg, t.bg.replace('135deg', '155deg'), t.bg.replace('135deg', '115deg')];
   document.getElementById('pThumbs').innerHTML = vars.map((bg, i) => `
-    <div style="flex:0 0 110px;height:62px;border-radius:8px;overflow:hidden;background:${bg};border:2px solid ${i===0?t.accent:'#334155'};cursor:pointer;transition:border-color .15s;position:relative;">
-      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#94a3b8;">Slide ${i+1}</div>
+    <div style="flex:0 0 110px;height:62px;border-radius:8px;overflow:hidden;background:${bg};border:2px solid ${i === 0 ? t.accent : '#334155'};cursor:pointer;transition:border-color .15s;position:relative;">
+      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#94a3b8;">Slide ${i + 1}</div>
     </div>`).join('');
 
   updateModalFav();
@@ -258,7 +258,7 @@ function closeModal() {
   setTimeout(() => { modal.classList.add('hidden'); modalId = null; }, 220);
 }
 document.getElementById('closeModal').addEventListener('click', closeModal);
-document.getElementById('previewModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+document.getElementById('previewModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
 document.getElementById('pFavBtn').addEventListener('click', () => { if (modalId) toggleStar(modalId); });
 document.getElementById('pUseBtn').addEventListener('click', () => { if (modalId) useTemplate(modalId); });
 
@@ -267,10 +267,10 @@ document.querySelectorAll('.category-pill').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.category-pill').forEach(b => {
       b.classList.remove('active');
-      b.classList.add('bg-white','border-outline-variant','text-on-surface-variant');
+      b.classList.add('bg-white', 'border-outline-variant', 'text-on-surface-variant');
     });
     btn.classList.add('active');
-    btn.classList.remove('bg-white','border-outline-variant','text-on-surface-variant');
+    btn.classList.remove('bg-white', 'border-outline-variant', 'text-on-surface-variant');
     currentCat = btn.dataset.cat;
     visibleN = 6;
     renderGrid();
@@ -279,7 +279,7 @@ document.querySelectorAll('.category-pill').forEach(btn => {
 
 // ── Search ─────────────────────────────────────────
 let searchT;
-document.getElementById('searchInput').addEventListener('input', function() {
+document.getElementById('searchInput').addEventListener('input', function () {
   clearTimeout(searchT);
   searchT = setTimeout(() => {
     currentQ = this.value.trim().toLowerCase();

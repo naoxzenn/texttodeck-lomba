@@ -18,87 +18,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── DOM ELEMENTS ──────────────────────────────────────────────────
   const $ = id => document.getElementById(id);
-  const elSource      = $("sourceText");
-  const elFile      = $("fileInput");
+  const elSource = $("sourceText");
+  const elFile = $("fileInput");
   const elCharCount = $("charCount");
-  const elSlideCount= $("slideCountVal");
-  const elGenBtn    = $("generateBtn");
-  const elGenFcBtn  = $("generateFcBtn");
-  const elGenText   = $("genText");
-  const elGenIcon   = $("genIcon");
-  const elCanvas    = $("slideCanvas");
-  const elThumbs    = $("thumbRow");
-  const elStream    = $("streamBox");
+  const elSlideCount = $("slideCountVal");
+  const elGenBtn = $("generateBtn");
+  const elGenFcBtn = $("generateFcBtn");
+  const elGenText = $("genText");
+  const elGenIcon = $("genIcon");
+  const elCanvas = $("slideCanvas");
+  const elThumbs = $("thumbRow");
+  const elStream = $("streamBox");
   const elStreamTxt = $("streamText");
-  const elPrev      = $("prevBtn");
-  const elNext      = $("nextBtn");
-  const elFull      = $("fullscreenBtn");
-  const elEdit      = $("editBtn");
-  const elDownload  = $("downloadBtn");
-  const elLabel     = $("slideLabel");
-  const elModal     = $("editModal");
-  const elBadge     = $("editBadge");
-  const elTitle     = $("editTitle");
-  const elBody      = $("editBody");
-  const elBullWrap  = $("editBullets");
+  const elPrev = $("prevBtn");
+  const elNext = $("nextBtn");
+  const elFull = $("fullscreenBtn");
+  const elEdit = $("editBtn");
+  const elDownload = $("downloadBtn");
+  const elLabel = $("slideLabel");
+  const elModal = $("editModal");
+  const elBadge = $("editBadge");
+  const elTitle = $("editTitle");
+  const elBody = $("editBody");
+  const elBullWrap = $("editBullets");
   const elBullInput = $("editBulletsInput");
-  const elApply     = $("applyEdit");
-  const elCancel    = $("cancelEdit");
-  const elClose     = $("closeModal");
-  const elSample    = $("sampleTextBtn");
+  const elApply = $("applyEdit");
+  const elCancel = $("cancelEdit");
+  const elClose = $("closeModal");
+  const elSample = $("sampleTextBtn");
 
   // Export Modal Elements
   const elExportModal = $("exportModal");
   const elCloseExport = $("closeExportModal");
-  const elExportHtml  = $("exportHtmlBtn");
-  const elExportPdf   = $("exportPdfBtn");
-  const elExportPptx  = $("exportPptxBtn");
+  const elExportHtml = $("exportHtmlBtn");
+  const elExportPdf = $("exportPdfBtn");
+  const elExportPptx = $("exportPptxBtn");
 
   // ── THEME STYLES ──────────────────────────────────────────────────
   const T = {
     futuristic: {
-      wrap:  "background:linear-gradient(135deg,#0a1628,#0d2040 60%,#0a2550);padding:clamp(20px,4%,40px);position:relative;width:100%;box-sizing:border-box;overflow:hidden;color:#fff;font-family:'Inter',sans-serif;",
+      wrap: "background:linear-gradient(135deg,#0a1628,#0d2040 60%,#0a2550);padding:clamp(20px,4%,40px);position:relative;width:100%;box-sizing:border-box;overflow:hidden;color:#fff;font-family:'Inter',sans-serif;",
       badge: "display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(0,209,255,.15);color:#00d1ff;border:1px solid rgba(0,209,255,.3);margin-bottom:16px;width:fit-content;",
       title: "font-size:clamp(18px,2.5vw,26px);font-weight:800;color:#fff;line-height:1.25;margin-bottom:12px;word-break:break-word;",
-      desc:  "font-size:clamp(12px,1.5vw,15px);color:rgba(255,255,255,.85);line-height:1.6;margin-bottom:16px;",
+      desc: "font-size:clamp(12px,1.5vw,15px);color:rgba(255,255,255,.85);line-height:1.6;margin-bottom:16px;",
       bItem: "display:flex;gap:10px;margin-bottom:9px;",
-      bDot:  "display:inline-block;width:7px;height:7px;border-radius:50%;background:#00d1ff;flex-shrink:0;margin-top:6px;",
-      bTxt:  "font-size:14px;color:rgba(255,255,255,.85);line-height:1.6;",
-      ff:    "background:linear-gradient(135deg,#0d2040,#0a2550);border:1px solid rgba(0,209,255,.25);color:#fff;",
-      fb:    "background:rgba(0,209,255,.1);border:1px solid rgba(0,209,255,.3);color:#fff;"
+      bDot: "display:inline-block;width:7px;height:7px;border-radius:50%;background:#00d1ff;flex-shrink:0;margin-top:6px;",
+      bTxt: "font-size:14px;color:rgba(255,255,255,.85);line-height:1.6;",
+      ff: "background:linear-gradient(135deg,#0d2040,#0a2550);border:1px solid rgba(0,209,255,.25);color:#fff;",
+      fb: "background:rgba(0,209,255,.1);border:1px solid rgba(0,209,255,.3);color:#fff;"
     },
     corporate: {
-      wrap:  "background:#fff;padding:clamp(20px,4%,40px);border-left:6px solid #0061a3;width:100%;box-sizing:border-box;overflow:hidden;color:#131b2e;font-family:'Inter',sans-serif;box-shadow:inset 0 0 20px rgba(0,0,0,0.02);",
+      wrap: "background:#fff;padding:clamp(20px,4%,40px);border-left:6px solid #0061a3;width:100%;box-sizing:border-box;overflow:hidden;color:#131b2e;font-family:'Inter',sans-serif;box-shadow:inset 0 0 20px rgba(0,0,0,0.02);",
       badge: "display:inline-block;padding:4px 14px;border-radius:4px;font-size:11px;font-weight:700;background:#e8f0fe;color:#0061a3;margin-bottom:16px;width:fit-content;",
       title: "font-size:clamp(18px,2.5vw,24px);font-weight:700;color:#131b2e;line-height:1.25;margin-bottom:12px;word-break:break-word;",
-      desc:  "font-size:clamp(12px,1.5vw,14px);color:#283044;line-height:1.6;margin-bottom:16px;",
+      desc: "font-size:clamp(12px,1.5vw,14px);color:#283044;line-height:1.6;margin-bottom:16px;",
       bItem: "display:flex;gap:10px;margin-bottom:8px;",
-      bDot:  "display:inline-block;width:8px;height:8px;background:#0061a3;flex-shrink:0;margin-top:6px;",
-      bTxt:  "font-size:14px;color:#283044;line-height:1.6;",
-      ff:    "background:#f8fafc;border:2px solid #0061a3;color:#131b2e;",
-      fb:    "background:#e8f0fe;border:2px solid #0061a3;color:#131b2e;"
+      bDot: "display:inline-block;width:8px;height:8px;background:#0061a3;flex-shrink:0;margin-top:6px;",
+      bTxt: "font-size:14px;color:#283044;line-height:1.6;",
+      ff: "background:#f8fafc;border:2px solid #0061a3;color:#131b2e;",
+      fb: "background:#e8f0fe;border:2px solid #0061a3;color:#131b2e;"
     },
     creative: {
-      wrap:  "background:linear-gradient(135deg,#7c3aed,#db2777 50%,#f59e0b);padding:clamp(20px,4%,40px);width:100%;box-sizing:border-box;overflow:hidden;color:#fff;font-family:'Inter',sans-serif;",
+      wrap: "background:linear-gradient(135deg,#7c3aed,#db2777 50%,#f59e0b);padding:clamp(20px,4%,40px);width:100%;box-sizing:border-box;overflow:hidden;color:#fff;font-family:'Inter',sans-serif;",
       badge: "display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(255,255,255,.25);color:#fff;margin-bottom:16px;width:fit-content;",
       title: "font-size:clamp(18px,2.8vw,28px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,.2);word-break:break-word;",
-      desc:  "font-size:clamp(12px,1.5vw,15px);color:#fff;line-height:1.6;font-weight:500;opacity:0.95;",
+      desc: "font-size:clamp(12px,1.5vw,15px);color:#fff;line-height:1.6;font-weight:500;opacity:0.95;",
       bItem: "display:flex;gap:10px;margin-bottom:10px;",
-      bDot:  "display:inline-block;width:10px;height:10px;border-radius:2px;background:#fff;flex-shrink:0;margin-top:5px;transform:rotate(45deg);",
-      bTxt:  "font-size:14px;color:#fff;line-height:1.6;font-weight:500;",
-      ff:    "background:rgba(124,58,237,.8);border:1px solid rgba(255,255,255,.3);color:#fff;",
-      fb:    "background:rgba(219,39,119,.7);border:1px solid rgba(255,255,255,.3);color:#fff;"
+      bDot: "display:inline-block;width:10px;height:10px;border-radius:2px;background:#fff;flex-shrink:0;margin-top:5px;transform:rotate(45deg);",
+      bTxt: "font-size:14px;color:#fff;line-height:1.6;font-weight:500;",
+      ff: "background:rgba(124,58,237,.8);border:1px solid rgba(255,255,255,.3);color:#fff;",
+      fb: "background:rgba(219,39,119,.7);border:1px solid rgba(255,255,255,.3);color:#fff;"
     },
     dark: {
-      wrap:  "background:linear-gradient(160deg,#0f1117,#1a1f2e);padding:clamp(20px,4%,40px);width:100%;box-sizing:border-box;overflow:hidden;color:#cbd5e1;font-family:'Inter',sans-serif;",
+      wrap: "background:linear-gradient(160deg,#0f1117,#1a1f2e);padding:clamp(20px,4%,40px);width:100%;box-sizing:border-box;overflow:hidden;color:#cbd5e1;font-family:'Inter',sans-serif;",
       badge: "display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);margin-bottom:16px;width:fit-content;",
       title: "font-size:clamp(18px,2.5vw,26px);font-weight:800;color:#e2e8f0;line-height:1.25;margin-bottom:12px;word-break:break-word;",
-      desc:  "font-size:clamp(12px,1.5vw,14px);color:#cbd5e1;line-height:1.6;opacity:0.9;",
+      desc: "font-size:clamp(12px,1.5vw,14px);color:#cbd5e1;line-height:1.6;opacity:0.9;",
       bItem: "display:flex;gap:10px;margin-bottom:10px;",
-      bDot:  "display:inline-block;width:7px;height:7px;border-radius:50%;background:#34d399;flex-shrink:0;margin-top:6px;",
-      bTxt:  "font-size:14px;color:#cbd5e1;line-height:1.6;",
-      ff:    "background:#1e2336;border:1px solid rgba(52,211,153,.2);color:#e2e8f0;",
-      fb:    "background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:#e2e8f0;"
+      bDot: "display:inline-block;width:7px;height:7px;border-radius:50%;background:#34d399;flex-shrink:0;margin-top:6px;",
+      bTxt: "font-size:14px;color:#cbd5e1;line-height:1.6;",
+      ff: "background:#1e2336;border:1px solid rgba(52,211,153,.2);color:#e2e8f0;",
+      fb: "background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:#e2e8f0;"
     }
   };
 
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;position:relative;padding-left:10px;">
               ${(slide.bullets || []).map((b, idx) => `
                 <div style="display:flex;gap:15px;align-items:center;">
-                  <span style="font-weight:800;color:#00d1ff;font-size:16px;">0${idx+1}</span>
+                  <span style="font-weight:800;color:#00d1ff;font-size:16px;">0${idx + 1}</span>
                   <div style="font-size:14px;opacity:0.9;">${b}</div>
                 </div>
               `).join("")}
@@ -479,12 +479,12 @@ Prestasi:
     if (s.type === "flashcard") {
       if (elBadge) elBadge.value = "Flashcard";
       if (elTitle) elTitle.value = s.front;
-      if (elBody)  elBody.value  = s.back;
+      if (elBody) elBody.value = s.back;
       if (elBullWrap) elBullWrap.classList.add("hidden");
     } else {
       if (elBadge) elBadge.value = (s.layout || "slide").toUpperCase();
       if (elTitle) elTitle.value = s.title || "";
-      if (elBody)  elBody.value  = s.body || "";
+      if (elBody) elBody.value = s.body || "";
       if (elBullWrap && elBullInput) {
         if (s.bullets && s.bullets.length) {
           elBullWrap.classList.remove("hidden");
@@ -500,20 +500,20 @@ Prestasi:
 
   function closeModal() { elModal.classList.add("hidden"); }
 
-  elEdit   && elEdit.addEventListener("click", openModal);
-  elClose  && elClose.addEventListener("click", closeModal);
+  elEdit && elEdit.addEventListener("click", openModal);
+  elClose && elClose.addEventListener("click", closeModal);
   elCancel && elCancel.addEventListener("click", closeModal);
-  elModal  && elModal.addEventListener("click", e => { if (e.target === elModal) closeModal(); });
+  elModal && elModal.addEventListener("click", e => { if (e.target === elModal) closeModal(); });
 
   elApply && elApply.addEventListener("click", () => {
     if (!state.slides.length) return;
     const s = state.slides[state.index];
     if (s.type === "flashcard") {
       s.front = elTitle ? elTitle.value.trim() : s.front;
-      s.back  = elBody  ? elBody.value.trim()  : s.back;
+      s.back = elBody ? elBody.value.trim() : s.back;
     } else {
-      s.title   = elTitle ? elTitle.value.trim() : s.title;
-      s.body    = elBody  ? elBody.value.trim()  : s.body;
+      s.title = elTitle ? elTitle.value.trim() : s.title;
+      s.body = elBody ? elBody.value.trim() : s.body;
       if (elBullInput) {
         s.bullets = elBullInput.value.split("\n").map(l => l.trim()).filter(Boolean);
       }
@@ -566,8 +566,8 @@ ${body}
 </html>`;
 
     const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
     a.href = url; a.download = "text-deck-export.html";
     document.body.appendChild(a); a.click();
     document.body.removeChild(a); URL.revokeObjectURL(url);

@@ -1,7 +1,7 @@
 /**
  * TextDeck AI — Login Page Logic
  * Handles: reverse route guard, input validation, mock JWT auth,
- * remember-me storage, and redirect to Dashboard.
+ * remember-me storage, and redirect to dashboard.
  */
 
 // ─────────────────────────────────────────────────
@@ -13,7 +13,7 @@
     localStorage.getItem("authToken") ||
     sessionStorage.getItem("authToken");
   if (token) {
-    window.location.replace("Dashboard.html");
+    window.location.replace("dashboard.html");
   }
 })();
 
@@ -178,11 +178,11 @@ document.querySelectorAll("input").forEach(function (input) {
     e.preventDefault();
     clearError();
 
-    const emailInput    = document.getElementById("email");
+    const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
     const rememberInput = document.getElementById("remember");
 
-    const email    = emailInput ? emailInput.value.trim() : "";
+    const email = emailInput ? emailInput.value.trim() : "";
     const password = passwordInput ? passwordInput.value : "";
     const remember = rememberInput ? rememberInput.checked : false;
 
@@ -209,7 +209,7 @@ document.querySelectorAll("input").forEach(function (input) {
     }
 
     // --- Mock Authentication ---
-    const mockToken   = "mock-jwt-token-12345";
+    const mockToken = "mock-jwt-token-12345";
     const userSession = JSON.stringify({
       fullName: "John Doe",
       email: email,
@@ -226,7 +226,7 @@ document.querySelectorAll("input").forEach(function (input) {
       sessionStorage.setItem("userSession", userSession);
     }
 
-    // --- Redirect to Dashboard ---
-    window.location.href = "Dashboard.html";
+    // --- Redirect to dashboard ---
+    window.location.href = "dashboard.html";
   });
 })();
