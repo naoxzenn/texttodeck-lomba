@@ -5,6 +5,10 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>TextDeck - Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Export libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="css/global.css" rel="stylesheet"/>
@@ -71,18 +75,19 @@
     outline: none;
   }
 
-  /* === TEMPLATE BUTTONS: Crisp borders on idle, vivid selected state === */
+  /* === TEMPLATE BUTTONS === */
   .template-btn {
     background: #ffffff;
     border: 1.5px solid rgba(148, 163, 184, 0.55);
     border-radius: 12px;
     color: #404752;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
-    padding: 10px 12px;
+    padding: 9px 11px;
     cursor: pointer;
     transition: all 0.18s ease;
     text-align: left;
+    line-height: 1.4;
   }
   .template-btn:hover:not(.selected) {
     background: #eef4ff;
@@ -97,6 +102,26 @@
     box-shadow: 0 4px 14px rgba(0, 97, 163, 0.35);
     transform: translateY(-1px);
   }
+
+  /* === EXPORT MODAL === */
+  #exportModal > div {
+    background: #ffffff;
+    border: 1px solid rgba(19,27,46,0.1);
+    border-radius: 28px;
+    box-shadow: 0 8px 40px rgba(19,27,46,0.18);
+  }
+  .export-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-radius: 14px;
+    border: 1.5px solid rgba(148,163,184,0.5);
+    background: #f8fafc; cursor: pointer;
+    transition: all 0.18s; text-align: left; width: 100%;
+  }
+  .export-btn:hover { background: #eef4ff; border-color: rgba(0,97,163,0.35); transform: translateY(-1px); }
+  .export-btn .icon { font-size: 28px; flex-shrink: 0; }
+  .export-btn .label { font-size: 14px; font-weight: 700; color: #131b2e; }
+  .export-btn .desc  { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+  .export-btn.loading { opacity: 0.6; pointer-events: none; }
 
   /* === SLIDE CANVAS: Strong framed boundary for all slide types === */
   #slideCanvas {
@@ -327,6 +352,18 @@
         </div>
         <span class="text-xs text-slate-400 font-medium ml-auto" id="charCount">0 characters</span>
       </div>
+
+      <!-- Stage 5: Sample text injection button -->
+      <button id="sampleTextBtn"
+        style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;
+               background:rgba(0,97,163,0.07);border:1.5px dashed rgba(0,97,163,0.3);
+               color:#0061a3;font-size:12px;font-weight:600;cursor:pointer;
+               transition:all .18s;width:fit-content;"
+        onmouseover="this.style.background='rgba(0,97,163,0.13)'"
+        onmouseout="this.style.background='rgba(0,97,163,0.07)'">
+        <span class="material-symbols-outlined" style="font-size:15px;">lightbulb</span>
+        Try Sample Text
+      </button>
     </div>
 
     <!-- ── Card 2: Design Style ── -->
@@ -335,20 +372,30 @@
 
       <h2 class="section-heading">Design Style</h2>
 
-      <!-- Template Selector -->
-      <!-- VISUAL: Idle buttons have visible slate border; selected = gradient bg + glow -->
+      <!-- Presentation Template Selector -->
       <div class="flex flex-col gap-2">
-        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Template</label>
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Presentation Template</label>
+        <div class="grid grid-cols-2 gap-2" id="templateBtnGroup">
+          <button class="template-btn pres-tpl-btn selected" data-tpl="corporate">◼ Corporate</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="education">✎ Education</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="startup">◈ Startup</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="timeline">⟡ Timeline</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="comparison">⬡ Comparison</button>
+        </div>
+      </div>
+
+      <!-- Theme Selector -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Theme</label>
         <div class="grid grid-cols-2 gap-2">
-          <button class="template-btn selected" data-template="futuristic">✦ Futuristic Glass</button>
-          <button class="template-btn" data-template="corporate">◼ Corporate Minimal</button>
-          <button class="template-btn" data-template="creative">◆ Creative Vibrant</button>
-          <button class="template-btn" data-template="dark">◉ Dark Mode Pro</button>
+          <button class="template-btn theme-btn selected" data-template="futuristic">✦ Futuristic</button>
+          <button class="template-btn theme-btn" data-template="corporate">◼ Corporate</button>
+          <button class="template-btn theme-btn" data-template="creative">◆ Creative</button>
+          <button class="template-btn theme-btn" data-template="dark">◉ Dark Pro</button>
         </div>
       </div>
 
       <!-- Aspect Ratio -->
-      <!-- VISUAL: Structured slate border matches textarea feel -->
       <div class="flex flex-col gap-2">
         <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Aspect Ratio</label>
         <div class="relative">
@@ -357,27 +404,23 @@
             <option value="4/3">4:3 — Classic</option>
             <option value="1/1">1:1 — Social Square</option>
           </select>
-          <!-- Custom arrow for the select -->
           <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[18px] pointer-events-none text-slate-400">expand_more</span>
         </div>
       </div>
 
-      <!-- Slide Count Slider -->
+      <!-- Two Generate Buttons -->
       <div class="flex flex-col gap-2">
-        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Number of Slides</label>
-        <div class="flex items-center gap-3">
-          <input class="flex-1 mt-1" id="slideCount" max="10" min="1" type="range" value="3"/>
-          <span class="text-sm font-bold text-[#0061a3] w-6 text-center tabular-nums" id="slideCountVal">3</span>
-        </div>
+        <button class="group relative w-full py-4 text-white flex items-center justify-center gap-2 overflow-hidden" id="generateBtn">
+          <span class="material-symbols-outlined group-hover:rotate-12 transition-transform duration-200" id="genIcon">slideshow</span>
+          <span id="genText">Generate Presentation</span>
+          <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+        </button>
+        <button class="group relative w-full py-3.5 text-white flex items-center justify-center gap-2 overflow-hidden" id="generateFcBtn" style="background:linear-gradient(135deg,#00687c,#0891b2);border-radius:18px;box-shadow:0 6px 18px rgba(0,104,124,0.32);font-size:14px;font-weight:700;transition:all .2s;">
+          <span class="material-symbols-outlined group-hover:rotate-12 transition-transform duration-200">style</span>
+          <span>Generate Flashcards</span>
+          <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+        </button>
       </div>
-
-      <!-- Generate Button -->
-      <!-- VISUAL: Gradient bg + stronger shadow + hover lift -->
-      <button class="group relative w-full py-4 text-white flex items-center justify-center gap-2 overflow-hidden" id="generateBtn">
-        <span class="material-symbols-outlined group-hover:rotate-12 transition-transform duration-200" id="genIcon">bolt</span>
-        <span id="genText">Generate Slides</span>
-        <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-      </button>
 
     </div>
   </section>
@@ -439,8 +482,8 @@
           Edit Slide
         </button>
         <button class="flex items-center justify-center gap-2 py-4" id="downloadBtn">
-          <span class="material-symbols-outlined text-[18px]">download</span>
-          Download
+          <span class="material-symbols-outlined text-[18px]">ios_share</span>
+          Export
         </button>
       </div>
 
@@ -489,6 +532,50 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════════════
+     EXPORT MODAL
+═════════════════════════════════════════ -->
+<div class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" id="exportModal">
+  <div class="w-full max-w-md p-6 flex flex-col gap-5">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-bold text-[#131b2e]">Export Presentation</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Choose your preferred format</p>
+      </div>
+      <button class="p-2 hover:bg-slate-100 rounded-xl transition-colors" id="closeExportModal">
+        <span class="material-symbols-outlined text-[20px] text-slate-400">close</span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-3">
+      <!-- HTML Export -->
+      <button class="export-btn" id="exportHtmlBtn">
+        <span class="material-symbols-outlined icon" style="color:#0061a3;">code</span>
+        <div>
+          <div class="label">HTML File</div>
+          <div class="desc">Interactive, self-contained · Works offline</div>
+        </div>
+      </button>
+      <!-- PDF Export -->
+      <button class="export-btn" id="exportPdfBtn">
+        <span class="material-symbols-outlined icon" style="color:#e53e3e;">picture_as_pdf</span>
+        <div>
+          <div class="label">PDF Document</div>
+          <div class="desc">Print-ready · One page per slide</div>
+        </div>
+      </button>
+      <!-- PPTX Export -->
+      <button class="export-btn" id="exportPptxBtn">
+        <span class="material-symbols-outlined icon" style="color:#d4380d;">slideshow</span>
+        <div>
+          <div class="label">PowerPoint (PPTX)</div>
+          <div class="desc">Editable slides · One slide per deck card</div>
+        </div>
+      </button>
+    </div>
+    <p class="text-[11px] text-slate-300 text-center">PDF export renders the current slide template visually.</p>
+  </div>
+</div>
+
 <!-- ── FOOTER ── -->
 <footer>
   <div class="max-w-[1320px] mx-auto px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -507,6 +594,7 @@
 
 <script src="js/profile-menu.js"></script>
 <script src="js/navbar.js"></script>
+<script src="js/template-engine.js"></script>
 <script src="js/dashboard.js"></script>
 </body>
 </html>

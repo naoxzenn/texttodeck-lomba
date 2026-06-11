@@ -89,25 +89,25 @@ function renderGrid() {
     div.dataset.id = t.id;
 
     const titleColor = t.light ? t.accent : '#ffffff';
-    const subColor   = t.light ? 'rgba(19,27,46,0.6)' : 'rgba(255,255,255,0.55)';
+    const subColor   = t.light ? '#404752' : '#c8d8ee';
 
     div.innerHTML = `
       <div class="relative overflow-hidden" style="height:220px;">
         <div class="card-img w-full h-full" style="background:${t.bg};position:relative;">
-          <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:${t.accent};opacity:0.1;border-radius:50%;filter:blur(40px);"></div>
+          <div style="display:none;"></div>
           <div style="position:absolute;inset:0;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;">
-            <div style="font-size:10px;font-weight:700;color:${t.accent};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;opacity:0.85;">${t.cat}</div>
+            <div style="font-size:10px;font-weight:700;color:${t.accent};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">${t.cat}</div>
             <div style="font-size:18px;font-weight:700;color:${titleColor};line-height:1.2;max-width:80%;">${t.title}</div>
             <div style="margin-top:8px;font-size:11px;color:${subColor};line-height:1.5;max-width:75%;" class="line-clamp-2">${t.desc}</div>
           </div>
         </div>
-        <div class="card-overlay absolute inset-0 bg-primary/15 opacity-0 flex items-end justify-center pb-4">
-          <button class="preview-btn bg-white/90 backdrop-blur-sm text-primary text-xs font-bold px-4 py-2 rounded-full shadow hover:bg-white transition-colors flex items-center gap-1">
+        <div class="card-overlay absolute inset-0 opacity-0 flex items-end justify-center pb-4" style="background:#0061a3;">
+          <button class="preview-btn bg-white text-primary text-xs font-bold px-4 py-2 rounded-full shadow hover:bg-surface-container-low transition-colors flex items-center gap-1">
             <span class="material-symbols-outlined text-[14px]">visibility</span> Preview
           </button>
         </div>
         <div class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold ${BADGE_COLORS[t.cat] || 'bg-primary-container text-on-primary-container'}">${t.cat}</div>
-        <button class="star-btn absolute top-2.5 right-2.5 p-1.5 rounded-full bg-white/80 backdrop-blur-sm transition-all hover:scale-110 ${isStar ? 'text-yellow-400' : 'text-on-surface-variant'}" data-id="${t.id}">
+        <button class="star-btn absolute top-2.5 right-2.5 p-1.5 rounded-full bg-white transition-all hover:scale-110 ${isStar ? 'text-yellow-400' : 'text-on-surface-variant'}" data-id="${t.id}">
           <span class="material-symbols-outlined text-[18px] ${isStar ? 'fill-icon' : ''}">star</span>
         </button>
       </div>
@@ -166,6 +166,22 @@ function toggleStar(id) {
 // ── Use ────────────────────────────────────────────
 function useTemplate(id) {
   const t = TEMPLATES.find(x => x.id === id);
+  const mapping = {
+    1: 'corporate',
+    2: 'education',
+    3: 'education',
+    4: 'startup',
+    5: 'corporate',
+    6: 'corporate',
+    7: 'startup',
+    8: 'education',
+    9: 'timeline',
+    10: 'comparison',
+    11: 'corporate',
+    12: 'startup'
+  };
+  const tplKey = mapping[id] || 'corporate';
+  localStorage.setItem('selectedTemplate', tplKey);
   showToast(`✓ Membuka "${t.title}"…`);
   setTimeout(() => { window.location.href = 'Dashboard.html'; }, 900);
 }
@@ -175,7 +191,7 @@ function resetFilter() {
   currentCat = 'all'; currentQ = '';
   document.querySelectorAll('.category-pill').forEach(b => {
     b.classList.remove('active');
-    b.classList.add('bg-white/70','border-outline-variant','text-on-surface-variant');
+    b.classList.add('bg-white','border-outline-variant','text-on-surface-variant');
   });
   document.querySelector('[data-cat="all"]').classList.add('active');
   document.getElementById('searchInput').value = '';
@@ -199,16 +215,16 @@ function openModal(id) {
   ).join('');
 
   const titleC = t.light ? t.accent : '#ffffff';
-  const subC   = t.light ? 'rgba(19,27,46,0.55)' : 'rgba(255,255,255,0.55)';
+  const subC   = t.light ? '#404752' : '#c8d8ee';
   document.getElementById('pSlide').innerHTML = `
     <div style="width:100%;height:100%;background:${t.bg};position:relative;overflow:hidden;display:flex;align-items:center;font-family:Inter,sans-serif;">
-      <div style="position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:${t.accent};opacity:0.1;border-radius:50%;filter:blur(50px);"></div>
+      <div style="display:none;"></div>
       <div style="position:relative;z-index:2;padding:clamp(16px,5%,48px);width:100%;">
-        <div style="font-size:10px;font-weight:700;color:${t.accent};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;opacity:0.85;">${t.cat}</div>
+        <div style="font-size:10px;font-weight:700;color:${t.accent};letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">${t.cat}</div>
         <div style="font-size:clamp(16px,3vw,26px);font-weight:700;color:${titleC};line-height:1.2;max-width:80%;margin-bottom:10px;">${t.title}</div>
         <div style="font-size:12px;color:${subC};line-height:1.6;max-width:70%;">${t.desc}</div>
         <div style="margin-top:14px;display:flex;gap:8px;">
-          ${t.tags.slice(0,2).map(tg=>`<span style="padding:3px 10px;background:${t.accent}22;border:1px solid ${t.accent}44;color:${t.accent};border-radius:999px;font-size:10px;font-weight:600;">${tg}</span>`).join('')}
+          ${t.tags.slice(0,2).map(tg=>`<span style="padding:3px 10px;background:#1a2a3a;border:1px solid ${t.accent};color:${t.accent};border-radius:999px;font-size:10px;font-weight:600;">${tg}</span>`).join('')}
         </div>
       </div>
     </div>`;
@@ -216,8 +232,8 @@ function openModal(id) {
   // Thumbs (3 colour variations)
   const vars = [t.bg, t.bg.replace('135deg', '155deg'), t.bg.replace('135deg','115deg')];
   document.getElementById('pThumbs').innerHTML = vars.map((bg, i) => `
-    <div style="flex:0 0 110px;height:62px;border-radius:8px;overflow:hidden;background:${bg};border:2px solid ${i===0?t.accent:'transparent'};cursor:pointer;transition:border-color .15s;position:relative;">
-      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,0.45);">Slide ${i+1}</div>
+    <div style="flex:0 0 110px;height:62px;border-radius:8px;overflow:hidden;background:${bg};border:2px solid ${i===0?t.accent:'#334155'};cursor:pointer;transition:border-color .15s;position:relative;">
+      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:9px;color:#94a3b8;">Slide ${i+1}</div>
     </div>`).join('');
 
   updateModalFav();
@@ -251,10 +267,10 @@ document.querySelectorAll('.category-pill').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.category-pill').forEach(b => {
       b.classList.remove('active');
-      b.classList.add('bg-white/70','border-outline-variant','text-on-surface-variant');
+      b.classList.add('bg-white','border-outline-variant','text-on-surface-variant');
     });
     btn.classList.add('active');
-    btn.classList.remove('bg-white/70','border-outline-variant','text-on-surface-variant');
+    btn.classList.remove('bg-white','border-outline-variant','text-on-surface-variant');
     currentCat = btn.dataset.cat;
     visibleN = 6;
     renderGrid();
