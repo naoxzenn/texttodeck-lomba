@@ -1,794 +1,658 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>TextDeck - </title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
-  <link href="css/global.css" rel="stylesheet" />
-  <link href="css/navbar.css" rel="stylesheet" />
-  <link href="css/profile-menu.css" rel="stylesheet" />
-  <link href="css/dashboard.css" rel="stylesheet" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TextDeck - </title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="css/global.css" rel="stylesheet"/>
+<link href="css/navbar.css" rel="stylesheet"/>
+<link href="css/profile-menu.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
 
-  <style>
-    /* === BACKGROUND: Premium multi-stop mesh gradient replaces flat #faf8ff === */
-    body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(ellipse 80% 60% at 10% 0%, #deeeff 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 90% 5%, #ede8ff 0%, transparent 55%),
-        radial-gradient(ellipse 70% 70% at 50% 100%, #e6f4ff 0%, transparent 60%),
-        #f4f7fb;
-      min-height: 100vh;
-    }
+<style>
+  /* === BACKGROUND: Premium multi-stop mesh gradient replaces flat #faf8ff === */
+  body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(ellipse 80% 60% at 10% 0%, #deeeff 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 5%,  #ede8ff 0%, transparent 55%),
+                radial-gradient(ellipse 70% 70% at 50% 100%, #e6f4ff 0%, transparent 60%),
+                #f4f7fb;
+    min-height: 100vh;
+  }
 
-    /* === CARDS: High-contrast border + multi-layer shadow for clear elevation === */
-    .db-card {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(19, 27, 46, 0.09);
-      border-radius: 24px;
-      box-shadow:
-        0 1px 2px rgba(19, 27, 46, 0.06),
-        0 4px 12px rgba(19, 27, 46, 0.07),
-        0 12px 32px rgba(19, 27, 46, 0.06);
-      transition: box-shadow 0.2s ease;
-    }
+  /* === CARDS: High-contrast border + multi-layer shadow for clear elevation === */
+  .db-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(19, 27, 46, 0.09);
+    border-radius: 24px;
+    box-shadow:
+      0 1px 2px rgba(19, 27, 46, 0.06),
+      0 4px 12px rgba(19, 27, 46, 0.07),
+      0 12px 32px rgba(19, 27, 46, 0.06);
+    transition: box-shadow 0.2s ease;
+  }
 
-    /* === TEXTAREA: Structured border, inner shadow for recessed feel === */
-    #sourceText {
-      background: #f8fafc;
-      border: 1.5px solid rgba(148, 163, 184, 0.7);
-      border-radius: 16px;
-      box-shadow: inset 0 2px 6px rgba(19, 27, 46, 0.05);
-      font-size: 13.5px;
-      line-height: 1.7;
-      color: #131b2e;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
+  /* === TEXTAREA: Structured border, inner shadow for recessed feel === */
+  #sourceText {
+    background: #f8fafc;
+    border: 1.5px solid rgba(148, 163, 184, 0.7);
+    border-radius: 16px;
+    box-shadow: inset 0 2px 6px rgba(19, 27, 46, 0.05);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #131b2e;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #sourceText::placeholder { color: #94a3b8; }
+  #sourceText:focus {
+    border-color: #0061a3;
+    box-shadow: inset 0 2px 6px rgba(19,27,46,0.04), 0 0 0 3px rgba(0,97,163,0.12);
+    outline: none;
+  }
 
-    #sourceText::placeholder {
-      color: #94a3b8;
-    }
+  /* === SELECT: Matching structured border, focus ring === */
+  #aspectRatio {
+    background: #f8fafc;
+    border: 1.5px solid rgba(148, 163, 184, 0.7);
+    border-radius: 12px;
+    font-size: 13.5px;
+    color: #131b2e;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #aspectRatio:focus {
+    border-color: #0061a3;
+    box-shadow: 0 0 0 3px rgba(0,97,163,0.12);
+    outline: none;
+  }
 
-    #sourceText:focus {
-      border-color: #0061a3;
-      box-shadow: inset 0 2px 6px rgba(19, 27, 46, 0.04), 0 0 0 3px rgba(0, 97, 163, 0.12);
-      outline: none;
-    }
+  /* === TEMPLATE BUTTONS === */
+  .template-btn {
+    background: #ffffff;
+    border: 1.5px solid rgba(148, 163, 184, 0.55);
+    border-radius: 12px;
+    color: #404752;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 9px 11px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: left;
+    line-height: 1.4;
+  }
+  .template-btn:hover:not(.selected) {
+    background: #eef4ff;
+    border-color: rgba(0, 97, 163, 0.35);
+    color: #0061a3;
+    transform: translateY(-1px);
+  }
+  .template-btn.selected {
+    background: linear-gradient(135deg, #0061a3 0%, #0051d5 100%);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 97, 163, 0.35);
+    transform: translateY(-1px);
+  }
 
-    /* === SELECT: Matching structured border, focus ring === */
-    #aspectRatio {
-      background: #f8fafc;
-      border: 1.5px solid rgba(148, 163, 184, 0.7);
-      border-radius: 12px;
-      font-size: 13.5px;
-      color: #131b2e;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
+  /* === EXPORT MODAL === */
+  #exportModal > div {
+    background: #ffffff;
+    border: 1px solid rgba(19,27,46,0.1);
+    border-radius: 28px;
+    box-shadow: 0 8px 40px rgba(19,27,46,0.18);
+  }
+  .export-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-radius: 14px;
+    border: 1.5px solid rgba(148,163,184,0.5);
+    background: #f8fafc; cursor: pointer;
+    transition: all 0.18s; text-align: left; width: 100%;
+  }
+  .export-btn:hover { background: #eef4ff; border-color: rgba(0,97,163,0.35); transform: translateY(-1px); }
+  .export-btn .icon { font-size: 28px; flex-shrink: 0; }
+  .export-btn .label { font-size: 14px; font-weight: 700; color: #131b2e; }
+  .export-btn .desc  { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+  .export-btn.loading { opacity: 0.6; pointer-events: none; }
 
-    #aspectRatio:focus {
-      border-color: #0061a3;
-      box-shadow: 0 0 0 3px rgba(0, 97, 163, 0.12);
-      outline: none;
-    }
+  /* === SLIDE CANVAS: Strong framed boundary for all slide types === */
+  #slideCanvas {
+    border: 1.5px solid rgba(19, 27, 46, 0.13);
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0a1628 0%, #0d2040 100%);
+    box-shadow:
+      0 2px 4px rgba(19,27,46,0.1),
+      0 8px 24px rgba(19,27,46,0.14),
+      0 24px 48px rgba(19,27,46,0.08);
+    transition: all 0.35s ease;
+    min-height: 240px;
+  }
 
-    /* === TEMPLATE BUTTONS === */
-    .template-btn {
-      background: #ffffff;
-      border: 1.5px solid rgba(148, 163, 184, 0.55);
-      border-radius: 12px;
-      color: #404752;
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 9px 11px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      text-align: left;
-      line-height: 1.4;
-    }
+  /* === STREAM BOX: Slightly more defined code-terminal look === */
+  #streamBox {
+    background: #f0f4f9;
+    border: 1.5px solid rgba(148,163,184,0.5);
+    border-radius: 14px;
+    font-size: 12px;
+  }
 
-    .template-btn:hover:not(.selected) {
-      background: #eef4ff;
-      border-color: rgba(0, 97, 163, 0.35);
-      color: #0061a3;
-      transform: translateY(-1px);
-    }
+  /* === SECTION LABEL (slide counter badge) === */
+  #slideLabel {
+    background: rgba(0,104,124,0.1);
+    color: #00687c;
+    border: 1px solid rgba(0,104,124,0.18);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
 
-    .template-btn.selected {
-      background: linear-gradient(135deg, #0061a3 0%, #0051d5 100%);
-      border-color: transparent;
-      color: #ffffff;
-      box-shadow: 0 4px 14px rgba(0, 97, 163, 0.35);
-      transform: translateY(-1px);
-    }
+  /* === NAV ICON BUTTONS: Hover ring === */
+  #prevBtn, #nextBtn, #fullscreenBtn {
+    border-radius: 10px;
+    transition: background 0.15s, transform 0.15s;
+    color: #404752;
+  }
+  #prevBtn:hover, #nextBtn:hover, #fullscreenBtn:hover {
+    background: rgba(0,97,163,0.08);
+    color: #0061a3;
+    transform: scale(1.08);
+  }
+  #prevBtn:disabled, #nextBtn:disabled { opacity: 0.3; pointer-events: none; }
 
-    /* === EXPORT MODAL === */
-    #exportModal>div {
-      background: #ffffff;
-      border: 1px solid rgba(19, 27, 46, 0.1);
-      border-radius: 28px;
-      box-shadow: 0 8px 40px rgba(19, 27, 46, 0.18);
-    }
+  /* === EDIT & DOWNLOAD BUTTONS === */
+  #editBtn {
+    background: #f1f5f9;
+    border: 1.5px solid rgba(148,163,184,0.55);
+    border-radius: 16px;
+    color: #131b2e;
+    font-weight: 600;
+    font-size: 13.5px;
+    transition: all 0.18s;
+  }
+  #editBtn:hover { background: #e2eaf6; border-color: rgba(0,97,163,0.3); color: #0061a3; transform: translateY(-1px); }
+  #editBtn:active { transform: scale(0.97); }
 
-    .export-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      border-radius: 14px;
-      border: 1.5px solid rgba(148, 163, 184, 0.5);
-      background: #f8fafc;
-      cursor: pointer;
-      transition: all 0.18s;
-      text-align: left;
-      width: 100%;
-    }
+  #downloadBtn {
+    background: linear-gradient(135deg, #0051d5 0%, #316bf3 100%);
+    border: none;
+    border-radius: 16px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 13.5px;
+    box-shadow: 0 4px 14px rgba(0,81,213,0.32);
+    transition: all 0.18s;
+  }
+  #downloadBtn:hover { box-shadow: 0 6px 20px rgba(0,81,213,0.42); transform: translateY(-1px); }
+  #downloadBtn:active { transform: scale(0.97); }
 
-    .export-btn:hover {
-      background: #eef4ff;
-      border-color: rgba(0, 97, 163, 0.35);
-      transform: translateY(-1px);
-    }
+  /* === GENERATE BUTTON enhancement: top-level polish === */
+  #generateBtn {
+    background: linear-gradient(135deg, #0061a3 0%, #0051d5 100%);
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0,97,163,0.32);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: all 0.2s ease;
+  }
+  #generateBtn:hover { box-shadow: 0 10px 28px rgba(0,97,163,0.42); transform: translateY(-2px); }
+  #generateBtn:active { transform: scale(0.97); }
+  #generateBtn:disabled { opacity: 0.65; transform: none; }
 
-    .export-btn .icon {
-      font-size: 28px;
-      flex-shrink: 0;
-    }
+  /* === AI STATUS BADGE === */
+  #aiStatus {
+    background: rgba(0,97,163,0.08);
+    color: #0061a3;
+    border: 1px solid rgba(0,97,163,0.18);
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
 
-    .export-btn .label {
-      font-size: 14px;
-      font-weight: 700;
-      color: #131b2e;
-    }
+  /* === UPLOAD FILE LABEL BUTTON === */
+  .upload-label {
+    background: #ffffff;
+    border: 1.5px solid rgba(148,163,184,0.6);
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #404752;
+    transition: all 0.18s;
+    box-shadow: 0 1px 4px rgba(19,27,46,0.07);
+  }
+  .upload-label:hover { background: #eef4ff; border-color: rgba(0,97,163,0.35); color: #0061a3; }
 
-    .export-btn .desc {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 1px;
-    }
+  /* === SECTION HEADING dividers === */
+  .section-heading {
+    font-size: 16px;
+    font-weight: 800;
+    color: #131b2e;
+    letter-spacing: -0.01em;
+  }
 
-    .export-btn.loading {
-      opacity: 0.6;
-      pointer-events: none;
-    }
+  /* === MODAL: Polished container === */
+  #editModal > div {
+    background: #ffffff;
+    border: 1px solid rgba(19,27,46,0.1);
+    border-radius: 28px;
+    box-shadow: 0 8px 40px rgba(19,27,46,0.18), 0 2px 8px rgba(19,27,46,0.1);
+  }
+  .modal-input {
+    background: #f8fafc;
+    border: 1.5px solid rgba(148,163,184,0.65);
+    border-radius: 12px;
+    font-size: 13.5px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .modal-input:focus {
+    border-color: #0061a3;
+    box-shadow: 0 0 0 3px rgba(0,97,163,0.12);
+    outline: none;
+  }
+  #cancelEdit {
+    border: 1.5px solid rgba(148,163,184,0.6);
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: all 0.18s;
+  }
+  #cancelEdit:hover { background: #f1f5f9; }
+  #applyEdit {
+    background: linear-gradient(135deg,#0061a3,#0051d5);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 13.5px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,97,163,0.28);
+    transition: all 0.18s;
+  }
+  #applyEdit:hover { box-shadow: 0 6px 18px rgba(0,97,163,0.38); transform: translateY(-1px); }
+  #applyEdit:active { transform: scale(0.97); }
 
-    /* === SLIDE CANVAS: Strong framed boundary for all slide types === */
-    #slideCanvas {
-      border: 1.5px solid rgba(19, 27, 46, 0.13);
-      border-radius: 18px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #0a1628 0%, #0d2040 100%);
-      box-shadow:
-        0 2px 4px rgba(19, 27, 46, 0.1),
-        0 8px 24px rgba(19, 27, 46, 0.14),
-        0 24px 48px rgba(19, 27, 46, 0.08);
-      transition: all 0.35s ease;
-      min-height: 240px;
-    }
+  /* === THUMB ROW === */
+  #thumbRow { gap: 8px; padding-bottom: 4px; }
+  #thumbRow::-webkit-scrollbar { height: 4px; }
+  #thumbRow::-webkit-scrollbar-thumb { background: rgba(0,97,163,0.2); border-radius: 999px; }
 
-    /* === STREAM BOX: Slightly more defined code-terminal look === */
-    #streamBox {
-      background: #f0f4f9;
-      border: 1.5px solid rgba(148, 163, 184, 0.5);
-      border-radius: 14px;
-      font-size: 12px;
-    }
+  /* === RANGE SLIDER accent === */
+  #slideCount { accent-color: #0061a3; height: 5px; cursor: pointer; border-radius: 999px; }
 
-    /* === SECTION LABEL (slide counter badge) === */
-    #slideLabel {
-      background: rgba(0, 104, 124, 0.1);
-      color: #00687c;
-      border: 1px solid rgba(0, 104, 124, 0.18);
-      border-radius: 999px;
-      padding: 3px 12px;
-      font-size: 11px;
-      font-weight: 700;
-    }
+  /* === AI pulse animation === */
+  @keyframes ai-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.85)} }
+  .ai-pulse { animation: ai-pulse 1.8s ease-in-out infinite; }
 
-    /* === NAV ICON BUTTONS: Hover ring === */
-    #prevBtn,
-    #nextBtn,
-    #fullscreenBtn {
-      border-radius: 10px;
-      transition: background 0.15s, transform 0.15s;
-      color: #404752;
-    }
-
-    #prevBtn:hover,
-    #nextBtn:hover,
-    #fullscreenBtn:hover {
-      background: rgba(0, 97, 163, 0.08);
-      color: #0061a3;
-      transform: scale(1.08);
-    }
-
-    #prevBtn:disabled,
-    #nextBtn:disabled {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    /* === EDIT & DOWNLOAD BUTTONS === */
-    #editBtn {
-      background: #f1f5f9;
-      border: 1.5px solid rgba(148, 163, 184, 0.55);
-      border-radius: 16px;
-      color: #131b2e;
-      font-weight: 600;
-      font-size: 13.5px;
-      transition: all 0.18s;
-    }
-
-    #editBtn:hover {
-      background: #e2eaf6;
-      border-color: rgba(0, 97, 163, 0.3);
-      color: #0061a3;
-      transform: translateY(-1px);
-    }
-
-    #editBtn:active {
-      transform: scale(0.97);
-    }
-
-    #downloadBtn {
-      background: linear-gradient(135deg, #0051d5 0%, #316bf3 100%);
-      border: none;
-      border-radius: 16px;
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 13.5px;
-      box-shadow: 0 4px 14px rgba(0, 81, 213, 0.32);
-      transition: all 0.18s;
-    }
-
-    #downloadBtn:hover {
-      box-shadow: 0 6px 20px rgba(0, 81, 213, 0.42);
-      transform: translateY(-1px);
-    }
-
-    #downloadBtn:active {
-      transform: scale(0.97);
-    }
-
-    /* === GENERATE BUTTON enhancement: top-level polish === */
-    #generateBtn {
-      background: linear-gradient(135deg, #0061a3 0%, #0051d5 100%);
-      border-radius: 18px;
-      box-shadow: 0 6px 18px rgba(0, 97, 163, 0.32);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      transition: all 0.2s ease;
-    }
-
-    #generateBtn:hover {
-      box-shadow: 0 10px 28px rgba(0, 97, 163, 0.42);
-      transform: translateY(-2px);
-    }
-
-    #generateBtn:active {
-      transform: scale(0.97);
-    }
-
-    #generateBtn:disabled {
-      opacity: 0.65;
-      transform: none;
-    }
-
-    /* === AI STATUS BADGE === */
-    #aiStatus {
-      background: rgba(0, 97, 163, 0.08);
-      color: #0061a3;
-      border: 1px solid rgba(0, 97, 163, 0.18);
-      border-radius: 999px;
-      font-size: 11.5px;
-      font-weight: 600;
-    }
-
-    /* === UPLOAD FILE LABEL BUTTON === */
-    .upload-label {
-      background: #ffffff;
-      border: 1.5px solid rgba(148, 163, 184, 0.6);
-      border-radius: 999px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #404752;
-      transition: all 0.18s;
-      box-shadow: 0 1px 4px rgba(19, 27, 46, 0.07);
-    }
-
-    .upload-label:hover {
-      background: #eef4ff;
-      border-color: rgba(0, 97, 163, 0.35);
-      color: #0061a3;
-    }
-
-    /* === SECTION HEADING dividers === */
-    .section-heading {
-      font-size: 16px;
-      font-weight: 800;
-      color: #131b2e;
-      letter-spacing: -0.01em;
-    }
-
-    /* === MODAL: Polished container === */
-    #editModal>div {
-      background: #ffffff;
-      border: 1px solid rgba(19, 27, 46, 0.1);
-      border-radius: 28px;
-      box-shadow: 0 8px 40px rgba(19, 27, 46, 0.18), 0 2px 8px rgba(19, 27, 46, 0.1);
-    }
-
-    .modal-input {
-      background: #f8fafc;
-      border: 1.5px solid rgba(148, 163, 184, 0.65);
-      border-radius: 12px;
-      font-size: 13.5px;
-      transition: border-color 0.18s, box-shadow 0.18s;
-    }
-
-    .modal-input:focus {
-      border-color: #0061a3;
-      box-shadow: 0 0 0 3px rgba(0, 97, 163, 0.12);
-      outline: none;
-    }
-
-    #cancelEdit {
-      border: 1.5px solid rgba(148, 163, 184, 0.6);
-      border-radius: 12px;
-      font-size: 13.5px;
-      font-weight: 600;
-      transition: all 0.18s;
-    }
-
-    #cancelEdit:hover {
-      background: #f1f5f9;
-    }
-
-    #applyEdit {
-      background: linear-gradient(135deg, #0061a3, #0051d5);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 13.5px;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(0, 97, 163, 0.28);
-      transition: all 0.18s;
-    }
-
-    #applyEdit:hover {
-      box-shadow: 0 6px 18px rgba(0, 97, 163, 0.38);
-      transform: translateY(-1px);
-    }
-
-    #applyEdit:active {
-      transform: scale(0.97);
-    }
-
-    /* === THUMB ROW === */
-    #thumbRow {
-      gap: 8px;
-      padding-bottom: 4px;
-    }
-
-    #thumbRow::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    #thumbRow::-webkit-scrollbar-thumb {
-      background: rgba(0, 97, 163, 0.2);
-      border-radius: 999px;
-    }
-
-    /* === RANGE SLIDER accent === */
-    #slideCount {
-      accent-color: #0061a3;
-      height: 5px;
-      cursor: pointer;
-      border-radius: 999px;
-    }
-
-    /* === AI pulse animation === */
-    @keyframes ai-pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: .5;
-        transform: scale(.85)
-      }
-    }
-
-    .ai-pulse {
-      animation: ai-pulse 1.8s ease-in-out infinite;
-    }
-
-    /* === FOOTER === */
-    footer {
-      border-top: 1px solid rgba(19, 27, 46, 0.08);
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(12px);
-    }
-  </style>
+  /* === FOOTER === */
+  footer {
+    border-top: 1px solid rgba(19,27,46,0.08);
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(12px);
+  }
+</style>
 </head>
 
 <body class="text-[#131b2e]">
 
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-  <div id="navbar-container"></div>
+<div id="navbar-container"></div>
 
-  <main class="pt-[96px] pb-20 px-4 md:px-10 max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+<main class="pt-[96px] pb-20 px-4 md:px-10 max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <section class="lg:col-span-5 flex flex-col gap-5">
+  <section class="lg:col-span-5 flex flex-col gap-5">
 
-      <div class="db-card p-6 flex flex-col gap-4">
+    <div class="db-card p-6 flex flex-col gap-4">
 
-        <div class="flex items-center justify-between">
-          <h2 class="section-heading">Source Content</h2>
-          <span class="material-symbols-outlined text-[20px]" style="color:#94a3b8;">description</span>
+      <div class="flex items-center justify-between">
+        <h2 class="section-heading">Source Content</h2>
+        <span class="material-symbols-outlined text-[20px]" style="color:#94a3b8;">description</span>
+      </div>
+
+      <div class="relative">
+        <textarea
+          class="w-full h-52 p-4 resize-none leading-relaxed"
+          id="sourceText"
+          placeholder="Paste your content here or drag & drop files...&#10;&#10;Example: Describe your topic, key points, data, or any text you want to turn into a presentation slide."
+        ></textarea>
+
+        <div class="absolute bottom-3 right-3">
+          <label class="upload-label flex items-center gap-1.5 px-3 py-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">upload_file</span>
+            Upload File
+            <input accept=".txt,.md,.pdf" class="hidden" id="fileInput" type="file"/>
+          </label>
         </div>
+      </div>
 
-        <div class="relative">
-          <textarea class="w-full h-52 p-4 resize-none leading-relaxed" id="sourceText"
-            placeholder="Paste your content here or drag & drop files...&#10;&#10;Example: Describe your topic, key points, data, or any text you want to turn into a presentation slide."></textarea>
-
-          <div class="absolute bottom-3 right-3">
-            <label class="upload-label flex items-center gap-1.5 px-3 py-1.5 cursor-pointer">
-              <span class="material-symbols-outlined text-[15px]">upload_file</span>
-              Upload File
-              <input accept=".txt,.md,.pdf" class="hidden" id="fileInput" type="file" />
-            </label>
-          </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-2 px-3 py-1" id="aiStatus">
+          <span class="w-2 h-2 rounded-full bg-[#0061a3] ai-pulse"></span>
+          AI ready to generate
         </div>
+        <span class="text-xs text-slate-400 font-medium ml-auto" id="charCount">0 characters</span>
+      </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-2 px-3 py-1" id="aiStatus">
-            <span class="w-2 h-2 rounded-full bg-[#0061a3] ai-pulse"></span>
-            AI ready to generate
-          </div>
-          <span class="text-xs text-slate-400 font-medium ml-auto" id="charCount">0 characters</span>
-        </div>
-
-        <button id="sampleTextBtn" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;
+      <button id="sampleTextBtn"
+        style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;
                background:rgba(0,97,163,0.07);border:1.5px dashed rgba(0,97,163,0.3);
                color:#0061a3;font-size:12px;font-weight:600;cursor:pointer;
-               transition:all .18s;width:fit-content;" onmouseover="this.style.background='rgba(0,97,163,0.13)'"
-          onmouseout="this.style.background='rgba(0,97,163,0.07)'">
-          <span class="material-symbols-outlined" style="font-size:15px;">lightbulb</span>
-          Try Sample Text
+               transition:all .18s;width:fit-content;"
+        onmouseover="this.style.background='rgba(0,97,163,0.13)'"
+        onmouseout="this.style.background='rgba(0,97,163,0.07)'">
+        <span class="material-symbols-outlined" style="font-size:15px;">lightbulb</span>
+        Try Sample Text
+      </button>
+    </div>
+
+    <div class="db-card p-6 flex flex-col gap-5">
+
+      <h2 class="section-heading">Design Style</h2>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Presentation Template</label>
+        <div class="grid grid-cols-2 gap-2" id="templateBtnGroup">
+          <button class="template-btn pres-tpl-btn selected" data-tpl="corporate">◼ Corporate</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="education">✎ Education</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="startup">◈ Startup</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="timeline">⟡ Timeline</button>
+          <button class="template-btn pres-tpl-btn" data-tpl="comparison">⬡ Comparison</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Theme</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="template-btn theme-btn selected" data-template="futuristic">✦ Futuristic</button>
+          <button class="template-btn theme-btn" data-template="corporate">◼ Corporate</button>
+          <button class="template-btn theme-btn" data-template="creative">◆ Creative</button>
+          <button class="template-btn theme-btn" data-template="dark">◉ Dark Pro</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Aspect Ratio</label>
+        <div class="relative">
+          <select class="w-full px-4 py-3 appearance-none cursor-pointer pr-10" id="aspectRatio">
+            <option value="16/9">16:9 — Widescreen</option>
+            <option value="4/3">4:3 — Classic</option>
+            <option value="1/1">1:1 — Social Square</option>
+          </select>
+          <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[18px] pointer-events-none text-slate-400">expand_more</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 mt-2">
+        <button class="group relative w-full py-4 text-white flex items-center justify-center gap-2 overflow-hidden" id="generateBtn">
+          <span class="material-symbols-outlined group-hover:rotate-12 transition-transform duration-200" id="genIcon">slideshow</span>
+          <span id="genText">Generate Presentation</span>
+          <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
         </button>
-      </div>
-
-      <div class="db-card p-6 flex flex-col gap-5">
-
-        <h2 class="section-heading">Design Style</h2>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Presentation
-            Template</label>
-          <div class="grid grid-cols-2 gap-2" id="templateBtnGroup">
-            <button class="template-btn pres-tpl-btn selected" data-tpl="corporate">◼ Corporate</button>
-            <button class="template-btn pres-tpl-btn" data-tpl="education">✎ Education</button>
-            <button class="template-btn pres-tpl-btn" data-tpl="startup">◈ Startup</button>
-            <button class="template-btn pres-tpl-btn" data-tpl="timeline">⟡ Timeline</button>
-            <button class="template-btn pres-tpl-btn" data-tpl="comparison">⬡ Comparison</button>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Theme</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button class="template-btn theme-btn selected" data-template="futuristic">✦ Futuristic</button>
-            <button class="template-btn theme-btn" data-template="corporate">◼ Corporate</button>
-            <button class="template-btn theme-btn" data-template="creative">◆ Creative</button>
-            <button class="template-btn theme-btn" data-template="dark">◉ Dark Pro</button>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-0.5">Aspect Ratio</label>
-          <div class="relative">
-            <select class="w-full px-4 py-3 appearance-none cursor-pointer pr-10" id="aspectRatio">
-              <option value="16/9">16:9 — Widescreen</option>
-              <option value="4/3">4:3 — Classic</option>
-              <option value="1/1">1:1 — Social Square</option>
-            </select>
-            <span
-              class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[18px] pointer-events-none text-slate-400">expand_more</span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3 mt-2">
-          <button class="group relative w-full py-4 text-white flex items-center justify-center gap-2 overflow-hidden"
-            id="generateBtn">
-            <span class="material-symbols-outlined group-hover:rotate-12 transition-transform duration-200"
-              id="genIcon">slideshow</span>
-            <span id="genText">Generate Presentation</span>
-            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            </div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <button class="group relative py-4 text-white flex items-center justify-center gap-1.5 overflow-hidden transition-all duration-200" id="generateFcBtn" style="background: linear-gradient(135deg, #00687c 0%, #0891b2 100%); border-radius: 18px; box-shadow: 0 4px 12px rgba(0,104,124,0.25); font-size: 13px; font-weight: 700;">
+            <span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform duration-200">style</span>
+            <span>Gen Flashcard</span>
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
           </button>
 
-          <button
-            class="group relative w-full py-4 text-white flex items-center justify-center gap-2 overflow-hidden"
-            id="generateFcBtn"
-            style="background:linear-gradient(135deg,#00687c,#0891b2);border-radius:18px;box-shadow:0 6px 18px rgba(0,104,124,0.32);font-size:14px;font-weight:700;transition:all .2s;">
-            <span
-              class="material-symbols-outlined group-hover:rotate-12 transition-transform duration-200">style</span>
-            <span>Generate Flashcards</span>
-            <div
-              class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            </div>
+          <button class="group relative py-4 text-white flex items-center justify-center gap-1.5 overflow-hidden transition-all duration-200 opacity-50 cursor-not-allowed" id="downloadFcBtn" disabled style="background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); border-radius: 18px; box-shadow: 0 4px 12px rgba(15,118,110,0.25); font-size: 13px; font-weight: 700;">
+            <span class="material-symbols-outlined text-[18px]">download</span>
+            <span>Download FC</span>
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
           </button>
         </div>
-
       </div>
-    </section>
 
-    <section class="lg:col-span-7 flex flex-col gap-5">
+    </div>
+  </section>
 
-      <div class="db-card p-6 flex flex-col gap-5 h-full">
+  <section class="lg:col-span-7 flex flex-col gap-5">
 
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <h2 class="section-heading">Live Preview</h2>
-            <span id="slideLabel">No slides yet</span>
-          </div>
+    <div class="db-card p-6 flex flex-col gap-5 h-full">
 
-          <div class="flex gap-1">
-            <button class="p-2" id="prevBtn" title="Previous slide">
-              <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-            </button>
-            <button class="p-2" id="nextBtn" title="Next slide">
-              <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-            </button>
-            <button class="p-2" id="fullscreenBtn" title="Fullscreen">
-              <span class="material-symbols-outlined text-[20px]">fullscreen</span>
-            </button>
-          </div>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h2 class="section-heading">Live Preview</h2>
+          <span id="slideLabel">No slides yet</span>
         </div>
 
-        <div id="slideCanvas">
-          <div class="flex flex-col items-center justify-center min-h-[260px] p-8 text-center">
-            <span class="material-symbols-outlined text-white/20 text-[64px] mb-4">auto_awesome</span>
-            <p class="text-white/45 text-sm font-semibold">Your generated slides will appear here</p>
-            <p class="text-white/25 text-xs mt-1">Enter content on the left and click Generate Slides</p>
-          </div>
+        <div class="flex gap-1">
+          <button class="p-2" id="prevBtn" title="Previous slide">
+            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+          </button>
+          <button class="p-2" id="nextBtn" title="Next slide">
+            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+          </button>
+          <button class="p-2" id="fullscreenBtn" title="Fullscreen">
+            <span class="material-symbols-outlined text-[20px]">fullscreen</span>
+          </button>
         </div>
+      </div>
 
-        <div class="hidden overflow-x-auto" id="thumbRow"></div>
-
-        <div class="hidden p-4 text-xs font-mono leading-relaxed max-h-28 overflow-y-auto" id="streamBox">
-          <span id="streamText"></span>
-          <span class="inline-block w-1 h-3 bg-[#0061a3] ml-0.5 ai-pulse"></span>
+      <div id="slideCanvas">
+        <div class="flex flex-col items-center justify-center min-h-[260px] p-8 text-center">
+          <span class="material-symbols-outlined text-white/20 text-[64px] mb-4">auto_awesome</span>
+          <p class="text-white/45 text-sm font-semibold">Your generated slides will appear here</p>
+          <p class="text-white/25 text-xs mt-1">Enter content on the left and click Generate Slides</p>
         </div>
+      </div>
 
-        <div class="grid grid-cols-3 gap-3 mt-auto">
-          <button class="flex items-center justify-center gap-2 py-4" id="editBtn">
+      <div class="hidden overflow-x-auto" id="thumbRow"></div>
+
+      <div class="hidden p-4 text-xs font-mono leading-relaxed max-h-28 overflow-y-auto" id="streamBox">
+        <span id="streamText"></span>
+        <span class="inline-block w-1 h-3 bg-[#0061a3] ml-0.5 ai-pulse"></span>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 mt-auto">
+        <button class="flex items-center justify-center gap-2 py-4" id="editBtn">
             <span class="material-symbols-outlined text-[18px]">edit_note</span>
             Edit Slide
-          </button>
+        </button>
 
-          <button class="flex items-center justify-center gap-2 py-4 bg-blue-600 text-white rounded-lg"
-            id="exportPdfBtn">
+        <button class="flex items-center justify-center gap-2 py-4 bg-blue-600 text-white rounded-lg" id="exportPdfBtn">
             <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
             Export PDF
-          </button>
+        </button>
 
-          <button class="flex items-center justify-center gap-2 py-4 bg-orange-600 text-white rounded-lg"
-            id="exportPptxBtn">
+        <button class="flex items-center justify-center gap-2 py-4 bg-orange-600 text-white rounded-lg" id="exportPptxBtn">
             <span class="material-symbols-outlined text-[18px]">slideshow</span>
             Export PPTX
-          </button>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <div class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
-    id="editModal">
-    <div class="w-full max-w-2xl p-6 flex flex-col gap-5">
-
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-[#131b2e]">Edit Slide Content</h3>
-        <button class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-500" id="closeModal">
-          <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
 
-      <div class="flex flex-col gap-3">
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Badge /
-            Label</label>
-          <input class="modal-input w-full px-4 py-2.5 text-sm" id="editBadge" type="text" />
-        </div>
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Title</label>
-          <input class="modal-input w-full px-4 py-2.5 text-sm" id="editTitle" type="text" />
-        </div>
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Body Text</label>
-          <textarea class="modal-input w-full h-28 px-4 py-2.5 text-sm resize-none leading-relaxed"
-            id="editBody"></textarea>
-        </div>
-        <div class="hidden" id="editBullets">
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Bullet Points (one
-            per line)</label>
-          <textarea class="modal-input w-full h-24 px-4 py-2.5 text-sm resize-none leading-relaxed"
-            id="editBulletsInput"></textarea>
-        </div>
-      </div>
-
-      <div class="flex gap-3 justify-end pt-1">
-        <button class="px-5 py-2.5 text-sm" id="cancelEdit">Cancel</button>
-        <button class="px-5 py-2.5 text-sm" id="applyEdit">Apply Changes</button>
-      </div>
-
     </div>
+  </section>
+</main>
+
+<div class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" id="editModal">
+  <div class="w-full max-w-2xl p-6 flex flex-col gap-5">
+
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-bold text-[#131b2e]">Edit Slide Content</h3>
+      <button class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-500" id="closeModal">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <div>
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Badge / Label</label>
+        <input class="modal-input w-full px-4 py-2.5 text-sm" id="editBadge" type="text"/>
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Title</label>
+        <input class="modal-input w-full px-4 py-2.5 text-sm" id="editTitle" type="text"/>
+      </div>
+      <div>
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Body Text</label>
+        <textarea class="modal-input w-full h-28 px-4 py-2.5 text-sm resize-none leading-relaxed" id="editBody"></textarea>
+      </div>
+      <div class="hidden" id="editBullets">
+        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Bullet Points (one per line)</label>
+        <textarea class="modal-input w-full h-24 px-4 py-2.5 text-sm resize-none leading-relaxed" id="editBulletsInput"></textarea>
+      </div>
+    </div>
+
+    <div class="flex gap-3 justify-end pt-1">
+      <button class="px-5 py-2.5 text-sm" id="cancelEdit">Cancel</button>
+      <button class="px-5 py-2.5 text-sm" id="applyEdit">Apply Changes</button>
+    </div>
+
   </div>
+</div>
 
-  <div class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-    id="exportModal">
-    <div class="w-full max-w-md p-6 flex flex-col gap-5">
-      <div class="flex items-center justify-between">
+<div class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" id="exportModal">
+  <div class="w-full max-w-md p-6 flex flex-col gap-5">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-bold text-[#131b2e]">Export Presentation</h3>
+        <p class="text-xs text-slate-400 mt-0.5">Choose your preferred format</p>
+      </div>
+      <button class="p-2 hover:bg-slate-100 rounded-xl transition-colors" id="closeExportModal">
+        <span class="material-symbols-outlined text-[20px] text-slate-400">close</span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-3">
+      <button class="export-btn" id="exportHtmlBtn">
+        <span class="material-symbols-outlined icon" style="color:#0061a3;">code</span>
         <div>
-          <h3 class="text-lg font-bold text-[#131b2e]">Export Presentation</h3>
-          <p class="text-xs text-slate-400 mt-0.5">Choose your preferred format</p>
+          <div class="label">HTML File</div>
+          <div class="desc">Interactive, self-contained · Works offline</div>
         </div>
-        <button class="p-2 hover:bg-slate-100 rounded-xl transition-colors" id="closeExportModal">
-          <span class="material-symbols-outlined text-[20px] text-slate-400">close</span>
-        </button>
-      </div>
-      <div class="flex flex-col gap-3">
-        <button class="export-btn" id="exportHtmlBtn">
-          <span class="material-symbols-outlined icon" style="color:#0061a3;">code</span>
-          <div>
-            <div class="label">HTML File</div>
-            <div class="desc">Interactive, self-contained · Works offline</div>
-          </div>
-        </button>
-        <button class="export-btn" id="exportPdfModalBtn">
-          <span class="material-symbols-outlined icon" style="color:#e53e3e;">picture_as_pdf</span>
-          <div>
-            <div class="label">PDF Document</div>
-            <div class="desc">Print-ready · One page per slide</div>
-          </div>
-        </button>
-        <button class="export-btn" id="exportPptxBtn">
-          <span class="material-symbols-outlined icon" style="color:#d4380d;">slideshow</span>
-          <div>
-            <div class="label">PowerPoint (PPTX)</div>
-            <div class="desc">Editable slides · One slide per deck card</div>
-          </div>
-        </button>
-      </div>
-      <p class="text-[11px] text-slate-300 text-center">PDF export renders the current slide template visually.</p>
+      </button>
+      <button class="export-btn" id="exportPdfModalBtn">
+        <span class="material-symbols-outlined icon" style="color:#e53e3e;">picture_as_pdf</span>
+        <div>
+          <div class="label">PDF Document</div>
+          <div class="desc">Print-ready · One page per slide</div>
+        </div>
+      </button>
+      <button class="export-btn" id="exportPptxBtn">
+        <span class="material-symbols-outlined icon" style="color:#d4380d;">slideshow</span>
+        <div>
+          <div class="label">PowerPoint (PPTX)</div>
+          <div class="desc">Editable slides · One slide per deck card</div>
+        </div>
+      </button>
     </div>
+    <p class="text-[11px] text-slate-300 text-center">PDF export renders the current slide template visually.</p>
   </div>
+</div>
 
-  <footer>
-    <div class="max-w-[1320px] mx-auto px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-[#0061a3] text-[22px]">auto_awesome</span>
-        <span class="text-base font-bold text-[#0061a3]">TextDeck</span>
-      </div>
-      <div class="flex gap-8">
-        <a class="text-xs font-semibold text-slate-400 hover:text-[#0061a3] transition-colors duration-200"
-          href="#">Privacy Policy</a>
-        <a class="text-xs font-semibold text-slate-400 hover:text-[#0061a3] transition-colors duration-200"
-          href="#">Terms of Service</a>
-        <a class="text-xs font-semibold text-slate-400 hover:text-[#0061a3] transition-colors duration-200"
-          href="#">Contact Support</a>
-      </div>
-      <p class="text-xs text-slate-400">© 2025 TextDeck. All rights reserved.</p>
+<footer>
+  <div class="max-w-[1320px] mx-auto px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#0061a3] text-[22px]">auto_awesome</span>
+      <span class="text-base font-bold text-[#0061a3]">TextDeck</span>
     </div>
-  </footer>
+    <div class="flex gap-8">
+      <a class="text-xs font-semibold text-slate-400 hover:text-[#0061a3] transition-colors duration-200" href="#">Privacy Policy</a>
+      <a class="text-xs font-semibold text-slate-400 hover:text-[#0061a3] transition-colors duration-200" href="#">Terms of Service</a>
+      <a class="text-xs font-semibold text-slate-400 hover:text-[#0061a3] transition-colors duration-200" href="#">Contact Support</a>
+    </div>
+    <p class="text-xs text-slate-400">© 2025 TextDeck. All rights reserved.</p>
+  </div>
+</footer>
 
-  <script src="js/profile-menu.js"></script>
-  <script src="js/navbar.js"></script>
-  <script src="js/input-processor.js"></script>
-  <script src="js/content-analyzer.js"></script>
-  <script src="js/summarizer.js"></script>
-  <script src="js/outline-builder.js"></script>
-  <script src="js/slide-planner.js"></script>
-  <script src="js/flashcard-generator.js"></script>
-  <script src="js/template-engine.js"></script>
-  <script src="js/renderer.js"></script>
-  <script src="js/dashboard.js"></script>
+<script src="js/profile-menu.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/input-processor.js"></script>
+<script src="js/content-analyzer.js"></script>
+<script src="js/summarizer.js"></script>
+<script src="js/outline-builder.js"></script>
+<script src="js/slide-planner.js"></script>
+<script src="js/flashcard-generator.js"></script>
+<script src="js/template-engine.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/dashboard.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-      // EXPORT PDF
-      const pdfBtn = document.getElementById("exportPdfBtn");
+    // EXPORT PDF
+    const pdfBtn = document.getElementById("exportPdfBtn");
 
-      if (pdfBtn) {
+    if (pdfBtn) {
         pdfBtn.addEventListener("click", function () {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
-          const text = document.getElementById("sourceText").value || "Tidak ada isi presentasi";
-          const lines = doc.splitTextToSize(text, 180);
-          doc.text(lines, 10, 20);
-          doc.save("presentasi.pdf");
-        });
-      }
-
-      // EXPORT PPTX
-      const pptBtn = document.getElementById("exportPptxBtn");
-
-      if (pptBtn) {
-        pptBtn.addEventListener("click", async function () {
-          try {
-            let pptx = new PptxGenJS();
-            pptx.layout = "LAYOUT_WIDE";
-            let slide = pptx.addSlide();
-
-            slide.addText("TextDeck Presentation", {
-              x: 0.5,
-              y: 0.3,
-              w: 8,
-              h: 0.5,
-              fontSize: 24,
-              bold: true
-            });
-
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             const text = document.getElementById("sourceText").value || "Tidak ada isi presentasi";
-
-            slide.addText(text, {
-              x: 0.5,
-              y: 1,
-              w: 9,
-              h: 4,
-              fontSize: 16
-            });
-
-            await pptx.writeFile({
-              fileName: "presentasi.pptx"
-            });
-
-          } catch (err) {
-            console.error(err);
-            alert("PPTX gagal dibuat. Cek Console (F12)");
-          }
+            const lines = doc.splitTextToSize(text, 180);
+            doc.text(lines, 10, 20);
+            doc.save("presentasi.pdf");
         });
-      }
+    }
 
-      // GENERATE & DOWNLOAD FLASHCARD
-      const flashcardBtn = document.getElementById("generateFcBtn");
-      const downloadFcBtn = document.getElementById("downloadFcBtn");
+    // EXPORT PPTX
+    const pptBtn = document.getElementById("exportPptxBtn");
 
-      if (flashcardBtn && downloadFcBtn) {
+    if (pptBtn) {
+        pptBtn.addEventListener("click", async function () {
+            try {
+                let pptx = new PptxGenJS();
+                pptx.layout = "LAYOUT_WIDE";
+                let slide = pptx.addSlide();
+
+                slide.addText("TextDeck Presentation", {
+                    x: 0.5,
+                    y: 0.3,
+                    w: 8,
+                    h: 0.5,
+                    fontSize: 24,
+                    bold: true
+                });
+
+                const text = document.getElementById("sourceText").value || "Tidak ada isi presentasi";
+
+                slide.addText(text, {
+                    x: 0.5,
+                    y: 1,
+                    w: 9,
+                    h: 4,
+                    fontSize: 16
+                });
+
+                await pptx.writeFile({
+                    fileName: "presentasi.pptx"
+                });
+
+            } catch (err) {
+                console.error(err);
+                alert("PPTX gagal dibuat. Cek Console (F12)");
+            }
+        });
+    }
+
+    // GENERATE & DOWNLOAD FLASHCARD
+    const flashcardBtn = document.getElementById("generateFcBtn");
+    const downloadFcBtn = document.getElementById("downloadFcBtn");
+
+    if (flashcardBtn && downloadFcBtn) {
         flashcardBtn.addEventListener("click", function () {
-          const text = document.getElementById("sourceText").value.trim();
+            const text = document.getElementById("sourceText").value.trim();
 
-          if (!text) {
-            alert("Masukkan materi terlebih dahulu");
-            return;
-          }
+            if (!text) {
+                alert("Masukkan materi terlebih dahulu");
+                return;
+            }
 
-          const lines = text
-            .split("\n")
-            .filter(line => line.trim() !== "");
+            const lines = text
+                .split("\n")
+                .filter(line => line.trim() !== "");
 
-          let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">`;
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">`;
 
-          lines.forEach((item, index) => {
-            html += `
+            lines.forEach((item, index) => {
+                html += `
                     <div class="bg-white rounded-xl shadow p-5 border">
                         <div class="text-xs text-slate-500 mb-2">
                             Flashcard ${index + 1}
@@ -799,32 +663,32 @@
                         <p class="text-slate-700 text-sm leading-relaxed">${item}</p>
                     </div>
                 `;
-          });
+            });
 
-          html += `</div>`;
+            html += `</div>`;
 
-          document.getElementById("slideCanvas").innerHTML = html;
-          document.getElementById("slideLabel").textContent = `${lines.length} Flashcards`;
-
-          // Aktifkan tombol download setelah flashcard sukses dibuat
-          downloadFcBtn.removeAttribute("disabled");
-          downloadFcBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            document.getElementById("slideCanvas").innerHTML = html;
+            document.getElementById("slideLabel").textContent = `${lines.length} Flashcards`;
+            
+            // Aktifkan tombol download setelah flashcard sukses dibuat
+            downloadFcBtn.removeAttribute("disabled");
+            downloadFcBtn.classList.remove("opacity-50", "cursor-not-allowed");
         });
-        // Handler untuk mendownload Flashcards sebagai dokumen HTML mandiri
-        downloadFcBtn.addEventListener("click", function () {
+// Handler untuk mendownload Flashcards sebagai dokumen HTML mandiri
+downloadFcBtn.addEventListener("click", function () {
 
-          const currentFlashcardsHTML =
-            document.getElementById("slideCanvas").innerHTML;
+    const currentFlashcardsHTML =
+        document.getElementById("slideCanvas").innerHTML;
 
-          if (
-            !currentFlashcardsHTML ||
-            currentFlashcardsHTML.includes("Your generated slides will appear here")
-          ) {
-            alert("Belum ada flashcard untuk didownload.");
-            return;
-          }
+    if (
+        !currentFlashcardsHTML ||
+        currentFlashcardsHTML.includes("Your generated slides will appear here")
+    ) {
+        alert("Belum ada flashcard untuk didownload.");
+        return;
+    }
 
-          const fullHTMLFile = `
+    const fullHTMLFile = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -842,29 +706,27 @@
 </html>
 `;
 
-          const blob = new Blob(
-            [fullHTMLFile],
-            { type: "text/html" }
-          );
+    const blob = new Blob(
+        [fullHTMLFile],
+        { type: "text/html" }
+    );
 
-          const link = document.createElement("a");
+    const link = document.createElement("a");
 
-          link.href = URL.createObjectURL(blob);
+    link.href = URL.createObjectURL(blob);
 
-          link.download = "textdeck-flashcards.html";
+    link.download = "textdeck-flashcards.html";
 
-          document.body.appendChild(link);
+    document.body.appendChild(link);
 
-          link.click();
+    link.click();
 
-          document.body.removeChild(link);
+    document.body.removeChild(link);
 
-          URL.revokeObjectURL(link.href);
+    URL.revokeObjectURL(link.href);
 
-        });
-      }
-    });
-  </script>
+}); }
+});
+</script>
 </body>
-
 </html>
