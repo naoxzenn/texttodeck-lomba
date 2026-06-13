@@ -82,13 +82,6 @@ function initNavbar() {
 
   } else {
     // Logged out structure
-    const loginBtnHtml = `<a href="login.html" class="login-btn">Login</a>`;
-    if (userSection) {
-      userSection.innerHTML = loginBtnHtml;
-    }
-    if (mobileUserSection) {
-      mobileUserSection.innerHTML = loginBtnHtml;
-    }
   }
 
   // 3. Set up mobile drawer toggles

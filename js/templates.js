@@ -23,20 +23,7 @@ tailwind.config = {
 }
 
 // ── Data ───────────────────────────────────────────
-const TEMPLATES = [
-  { id: 1, title: 'Executive Report', cat: 'Business', desc: 'Professional structure for data-driven executive summaries and quarterly business reviews.', tags: ['Executive', 'Report', 'Data'], bg: 'linear-gradient(135deg,#001d36,#003a6b)', accent: '#4da8ff' },
-  { id: 2, title: 'Curriculum Guide', cat: 'Education', desc: 'Syllabus and lesson plan templates optimized for clear learning objectives and student engagement.', tags: ['Syllabus', 'Lesson Plan', 'Learning'], bg: 'linear-gradient(135deg,#001f27,#003344)', accent: '#64d5f4' },
-  { id: 3, title: 'API Documentation', cat: 'Technology', desc: 'Structured documentation for software projects, featuring clean code blocks and endpoint descriptions.', tags: ['Developer', 'API', 'Docs'], bg: 'linear-gradient(135deg,#00174b,#002a7a)', accent: '#b4c5ff' },
-  { id: 4, title: 'Creative Portfolio', cat: 'Creative', desc: 'Bold layouts designed to showcase visual work and personal branding with maximum impact.', tags: ['Portfolio', 'Branding', 'Visual'], bg: 'linear-gradient(135deg,#1a0533,#2d0a5a)', accent: '#c084fc' },
-  { id: 5, title: 'Pure Document', cat: 'Minimalist', desc: 'Distraction-free template for long-form writing, research papers, and clean academic work.', tags: ['Academic', 'Research', 'Writing'], bg: 'linear-gradient(160deg,#f0f4f8,#e8edf5)', accent: '#0061a3', light: true },
-  { id: 6, title: 'Growth Plan', cat: 'Business', desc: 'Dynamic templates for marketing strategies, campaign tracking, and growth projections.', tags: ['Marketing', 'Growth', 'Campaign'], bg: 'linear-gradient(135deg,#001836,#002d58)', accent: '#9ecaff' },
-  { id: 7, title: 'Investor Pitch Deck', cat: 'Business', desc: 'High-converting slide structure built for startup funding rounds and venture capital pitches.', tags: ['Startup', 'Pitch', 'VC'], bg: 'linear-gradient(135deg,#0a1627,#0f2848)', accent: '#4da8ff' },
-  { id: 8, title: 'Science Lab Report', cat: 'Education', desc: 'Structured academic format for experiments, hypotheses, and data-backed scientific conclusions.', tags: ['Science', 'Experiment', 'Lab'], bg: 'linear-gradient(135deg,#052e16,#0a3d1e)', accent: '#86efac' },
-  { id: 9, title: 'Cyber Defense Brief', cat: 'Technology', desc: 'Network security and threat analysis template with dark glassmorphic overlays and data nodes.', tags: ['Security', 'Network', 'Threat'], bg: 'linear-gradient(135deg,#000d18,#001830)', accent: '#22d3ee' },
-  { id: 10, title: 'Brand Moodboard', cat: 'Creative', desc: 'Colorful and expressive layouts for brand identity workshops, agency pitches, and mood boards.', tags: ['Brand', 'Agency', 'Workshop'], bg: 'linear-gradient(135deg,#2d0808,#4a0f0f)', accent: '#fca5a5' },
-  { id: 11, title: 'Zen Minimal', cat: 'Minimalist', desc: 'Ultra-clean layout with vast whitespace and sharp typography for luxury or professional briefs.', tags: ['Clean', 'Luxury', 'Brief'], bg: 'linear-gradient(160deg,#f8fafc,#eef2f7)', accent: '#0051d5', light: true },
-  { id: 12, title: 'AI Research Paper', cat: 'Technology', desc: 'Modern layout for presenting ML models, neural architectures, and AI research findings visually.', tags: ['AI', 'Research', 'ML'], bg: 'linear-gradient(135deg,#050510,#0d1120)', accent: '#818cf8' },
-];
+
 
 const BADGE_COLORS = {
   Business: 'badge-business', Education: 'badge-education',
